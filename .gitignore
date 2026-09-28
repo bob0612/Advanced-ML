@@ -1,0 +1,4 @@
+# Project-local Python runtime and bootstrap tools.
+.tools/
+.DS_Store
+.superpowers/
