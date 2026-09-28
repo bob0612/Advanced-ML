@@ -4,6 +4,13 @@ Student ID: **3036797441**. This repository contains the supplied GPT baseline,
 an independently maintained exponential moving average (EMA) of training weights,
 paired experiments, and a reproducible submission package.
 
+Verified full-test CPU FP32 BPB: **2.1012651958438786**. Validation selected the
+original seed-17 raw baseline: EMA was slightly worse in both paired seeds.
+The [frozen code](https://github.com/bob0612/Advanced-ML/tree/0659d1eb28752ced329b3c94ac460b2628c4b527)
+and [matching model bundle](https://raw.githubusercontent.com/bob0612/Advanced-ML/0659d1eb28752ced329b3c94ac460b2628c4b527/MP1_student_starter/submission/model-bundle.zip)
+are publicly downloadable. See [delivery status](MP1_student_starter/submission/DELIVERY_STATUS.json)
+for course submission and later peer-review status.
+
 See [reproduction instructions](MP1_student_starter/REPRODUCE.md),
 the [report](MP1_student_starter/report/REPORT.pdf), and the
 [Chinese report source](MP1_student_starter/report/REPORT.md).
