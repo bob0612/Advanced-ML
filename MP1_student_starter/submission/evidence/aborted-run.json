@@ -1,0 +1,15 @@
+{
+  "run_id": "ema-d099-s17",
+  "status": "aborted_no_checkpoint",
+  "exit_code": 120,
+  "last_logged_step": 200,
+  "planned_steps": 1200,
+  "batch_size": 32,
+  "targets_per_sequence": 256,
+  "processed_targets_lower_bound": 1638400,
+  "processed_targets_upper_bound": 9830400,
+  "last_logged_training_seconds": 68.47914820793085,
+  "exact_training_cost_known": false,
+  "root_cause": "undetermined; no traceback; log redirected to cloud-synced path; sufficient free disk and no severe memory pressure observed afterward",
+  "retry_change": "same recipe, fresh directory, unbuffered Python and faulthandler with direct PTY output"
+}

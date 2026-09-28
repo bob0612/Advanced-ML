@@ -1,0 +1,12 @@
+{
+  "completed_training_trajectories": 5,
+  "completed_training_targets": 29655040,
+  "completed_train_seconds": 790.8974827092607,
+  "completed_training_process_seconds": 941.2068403749727,
+  "aborted_runs": 1,
+  "total_targets_lower_bound": 31293440,
+  "total_targets_upper_bound": 39485440,
+  "total_train_seconds_lower_bound": 859.3766309171915,
+  "exact_total_train_seconds_known": false,
+  "note": "EMA and raw outputs of each trajectory are counted once, not twice. One aborted attempt logged 200 steps; its exact final step/time is unavailable. Unit tests use small synthetic fixtures, are not model selection runs, and export no submission weights."
+}

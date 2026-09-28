@@ -1,0 +1,153 @@
+{
+  "protocol": "7506-mp1-wt2-v2",
+  "implementation": "student",
+  "config": {
+    "vocab": 2048,
+    "width": 128,
+    "heads": 4,
+    "depth": 4,
+    "context": 256
+  },
+  "seed": 23,
+  "parameters": 1088256,
+  "precision": "fp32",
+  "train_tokens": 9830400,
+  "preparation_seconds": 4.094180208048783,
+  "train_seconds": 237.8525252911495,
+  "validation": {
+    "bpb": 2.0760114040227444,
+    "token_ppl": 80.36064800012446,
+    "nll_nats": 1651960.7792021008,
+    "targets": 376599,
+    "utf8_bytes": 1148007,
+    "seconds": 5.843591791926883
+  },
+  "history": [
+    {
+      "step": 100,
+      "loss": 5.9128642082214355,
+      "seconds": 15.868188124964945
+    },
+    {
+      "step": 200,
+      "loss": 5.210155487060547,
+      "seconds": 31.820736457942985
+    },
+    {
+      "step": 300,
+      "loss": 4.940188884735107,
+      "seconds": 48.056072833016515
+    },
+    {
+      "step": 400,
+      "loss": 4.746539115905762,
+      "seconds": 67.91889970807824
+    },
+    {
+      "step": 500,
+      "loss": 4.6583099365234375,
+      "seconds": 89.43515783303883
+    },
+    {
+      "step": 600,
+      "loss": 4.595698356628418,
+      "seconds": 109.52927516610362
+    },
+    {
+      "step": 700,
+      "loss": 4.440638542175293,
+      "seconds": 129.73706904111896
+    },
+    {
+      "step": 800,
+      "loss": 4.38594388961792,
+      "seconds": 150.95915874908678
+    },
+    {
+      "step": 900,
+      "loss": 4.3504180908203125,
+      "seconds": 172.15384987415746
+    },
+    {
+      "step": 1000,
+      "loss": 4.3268046379089355,
+      "seconds": 193.25865133316256
+    },
+    {
+      "step": 1100,
+      "loss": 4.332098007202148,
+      "seconds": 214.85344683309086
+    },
+    {
+      "step": 1200,
+      "loss": 4.298064231872559,
+      "seconds": 237.85195666609798
+    }
+  ],
+  "validation_history": [
+    {
+      "step": 300,
+      "bpb": 2.334736988049147,
+      "token_ppl": 138.82315525192914,
+      "nll_nats": 1857838.5102008712,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 4.236885041929781
+    },
+    {
+      "step": 600,
+      "bpb": 2.18613858004544,
+      "token_ppl": 101.41476431863128,
+      "nll_nats": 1739593.1376569998,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 5.0847501249518245
+    },
+    {
+      "step": 900,
+      "bpb": 2.1110098027843756,
+      "token_ppl": 86.52857837513098,
+      "nll_nats": 1679810.3285721373,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 5.227192374994047
+    },
+    {
+      "step": 1200,
+      "bpb": 2.0760114040227444,
+      "token_ppl": 80.36064800012446,
+      "nll_nats": 1651960.7792021008,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 5.95258266699966
+    }
+  ],
+  "intermediate_validation_seconds": 20.501410208875313,
+  "process_seconds": 274.7486377910245,
+  "torch_version": "2.7.1",
+  "threads": 4,
+  "checkpoint_sha256": "92c12277447a9643e5c01d14f21c188d87a9c75aa858378cf442e520703d2e2c",
+  "implementation_sha256": "203d9ded22b08303d47392ce559037782ba277e48e63cc128dfc389cf76a6ead",
+  "trainer_sha256": "3f7ed320b263ba005829a05b2d62efadd5bc0773cbad246ad4e094b343c58166",
+  "ema_source_sha256": "76441fde65fd301e5ff22d99a1954d688fbf2ac60cfdf278980d91d995c6fc55",
+  "device": "cpu",
+  "device_name": "CPU",
+  "peak_allocated_gb": 0.0,
+  "peak_reserved_gb": 0.0,
+  "ema": {
+    "method": "ema",
+    "ema_decay": 0.99,
+    "ema_start": 600,
+    "ema_updates": 600,
+    "validation": {
+      "bpb": 2.0797434995485724,
+      "token_ppl": 80.99685803159818,
+      "nll_nats": 1654930.5487423628,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 6.404414082993753
+    },
+    "checkpoint": "checkpoint-ema.pt",
+    "checkpoint_sha256": "58df16a016c3edc7239fcc761d726133dabd2d322d5efb958f6a5724a5374fd6"
+  }
+}

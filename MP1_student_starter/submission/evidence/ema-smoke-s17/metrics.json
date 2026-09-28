@@ -1,0 +1,61 @@
+{
+  "protocol": "7506-mp1-wt2-v2",
+  "implementation": "student",
+  "config": {
+    "vocab": 2048,
+    "width": 128,
+    "heads": 4,
+    "depth": 4,
+    "context": 256
+  },
+  "seed": 17,
+  "parameters": 1088256,
+  "precision": "fp32",
+  "train_tokens": 81920,
+  "preparation_seconds": 8.54770933301188,
+  "train_seconds": 2.846894416026771,
+  "validation": {
+    "bpb": 3.5798219683823453,
+    "token_ppl": 1927.5652332904792,
+    "nll_nats": 2848599.7123303413,
+    "targets": 376599,
+    "utf8_bytes": 1148007,
+    "seconds": 6.461368583026342
+  },
+  "history": [
+    {
+      "step": 10,
+      "loss": 7.568997859954834,
+      "seconds": 2.8467224159976467
+    }
+  ],
+  "validation_history": [],
+  "intermediate_validation_seconds": 0.0,
+  "process_seconds": 24.787067124969326,
+  "torch_version": "2.7.1",
+  "threads": 4,
+  "checkpoint_sha256": "01cf3702c92648097cb38ad101785e0cc6fea24ad44ee70c228391a5a4d1c04a",
+  "implementation_sha256": "203d9ded22b08303d47392ce559037782ba277e48e63cc128dfc389cf76a6ead",
+  "trainer_sha256": "3f7ed320b263ba005829a05b2d62efadd5bc0773cbad246ad4e094b343c58166",
+  "ema_source_sha256": "76441fde65fd301e5ff22d99a1954d688fbf2ac60cfdf278980d91d995c6fc55",
+  "device": "cpu",
+  "device_name": "CPU",
+  "peak_allocated_gb": 0.0,
+  "peak_reserved_gb": 0.0,
+  "ema": {
+    "method": "ema",
+    "ema_decay": 0.99,
+    "ema_start": 5,
+    "ema_updates": 5,
+    "validation": {
+      "bpb": 3.599032586776047,
+      "token_ppl": 2007.4171512878843,
+      "nll_nats": 2863886.3278417587,
+      "targets": 376599,
+      "utf8_bytes": 1148007,
+      "seconds": 6.880760458065197
+    },
+    "checkpoint": "checkpoint-ema.pt",
+    "checkpoint_sha256": "0cbbbb9e915ac638f95560c92afd39e9075b168e274d2baf07b9324b0b6c48f7"
+  }
+}

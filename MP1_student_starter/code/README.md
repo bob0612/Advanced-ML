@@ -1,6 +1,6 @@
 # MP1 code — installation and usage
 
-Read [the project guide](../guide/GUIDE.md) for the assignment, assessment, deadlines and peer review. This README contains the running instructions and technical rules. The package has only these two documents.
+Read [the project guide](../GUIDE.md) for the assignment, assessment, deadlines and peer review. This README preserves the starter's technical rules and reference commands. For this submission's measured results, EMA commands and downloadable checkpoints, use [REPRODUCE.md](../REPRODUCE.md).
 
 All commands below run from **code/**. Data and the tokenizer are included. No API key, pretrained weights or additional dataset download is needed; after installing dependencies, training and evaluation work offline.
 
@@ -106,7 +106,7 @@ Measure all three limits for the same frozen predictor:
 
 ## 5. Prepare your submission and reproduce a peer
 
-The [guide](../guide/GUIDE.md) specifies the deadline and website workflow. Include the following in your immutable code repository:
+The [guide](../GUIDE.md) specifies the deadline and website workflow. Include the following in your immutable code repository:
 
 - **Report, at most 10 pages including figures, tables and references** 
 - **Reproduction instructions**
