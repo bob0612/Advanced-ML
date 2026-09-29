@@ -1,7 +1,0 @@
-{
-  "baseline": "baseline-s17",
-  "paired": "ema-d099-s17-retry",
-  "all_state_tensors_bitwise_equal": true,
-  "state_entries": 53,
-  "note": "checkpoint file hashes may differ despite identical model state"
-}

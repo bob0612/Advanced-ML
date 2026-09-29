@@ -1,6 +1,5 @@
 """Default recipe: 1,200 steps x 32 sequences x 256 targets = 9,830,400 tokens."""
 import argparse
-import copy
 import json
 import math
 from pathlib import Path
@@ -9,10 +8,10 @@ import torch
 from torch.nn import functional as F
 from common import PROTOCOL, ROOT, autocast, device_metrics, load_data, make_model, setup, sha
 from evaluate import score
-from ema import EMA
 
 
-def parse_args(argv=None):
+def main():
+    total_started = time.perf_counter()
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--implementation', default='student')
     p.add_argument('--config', type=Path, default=ROOT/'configs/baseline.json')
@@ -25,35 +24,15 @@ def parse_args(argv=None):
     p.add_argument('--batch-size', type=int, default=32)
     p.add_argument('--eval-every', type=int, default=0,
                    help='Optional validation-curve interval; 0 evaluates only after training.')
-    p.add_argument('--ema-decay', type=float, default=0.,
-                   help='0 disables averaging; otherwise use a decay strictly between 0 and 1.')
-    p.add_argument('--ema-start', type=int, default=600,
-                   help='Initialize EMA after this optimizer update, then average every later update.')
-    args = p.parse_args(argv)
+    p.add_argument('--save-every', type=int, default=0,
+                   help='Save intermediate inference checkpoints; 0 saves only the final one.')
+    p.add_argument('--learning-rate', type=float, default=.001)
+    p.add_argument('--weight-decay', type=float, default=.1)
+    args = p.parse_args()
     if args.steps < 1 or args.batch_size < 1:
         p.error('Batch size and step count must be positive.')
-    if not 0. <= args.ema_decay < 1.:
-        p.error('EMA decay must be 0 (disabled) or strictly between 0 and 1.')
-    if args.ema_decay and not 1 <= args.ema_start < args.steps:
-        p.error('Enabled EMA requires 1 <= ema-start < steps.')
-    return args
-
-
-def update_ema(ema, model, completed_step, *, decay, start):
-    """Copy updated weights at start; average subsequent optimizer updates."""
-    if not decay or completed_step < start:
-        return ema
-    if ema is None:
-        return EMA(model, decay)
-    ema.update(model)
-    return ema
-
-
-def main():
-    total_started = time.perf_counter()
-    args = parse_args()
     if args.run_dir.exists() and any(args.run_dir.iterdir()):
-        raise SystemExit('Run directory already contains results. Use a new --run-dir.')
+        p.error('Run directory already contains results. Use a new --run-dir.')
     device, precision = setup(args.device, args.precision, args.threads)
     torch.manual_seed(args.seed)
     prepared = time.perf_counter()
@@ -61,7 +40,7 @@ def main():
     config = json.loads(args.config.read_text())
     model, implementation_sha = make_model(args.implementation, config, device)
     args.run_dir.mkdir(parents=True, exist_ok=True)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=.001, weight_decay=.1)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     tokens = data['train'][0].to(device)
     rng = torch.Generator().manual_seed(args.seed)
     if device.type == 'cuda':
@@ -71,11 +50,10 @@ def main():
     history = []
     validation_history = []
     intermediate_validation_seconds = 0.
-    ema = None
     for step in range(args.steps):
         starts = torch.randint(len(tokens)-257, (args.batch_size,), generator=rng).to(device)
         batch = tokens[starts[:,None]+torch.arange(257,device=device)]
-        learning_rate = .001 * min(1.,(step+1)/100) * (.1+.9*.5*(1+math.cos(math.pi*step/args.steps)))
+        learning_rate = args.learning_rate * min(1.,(step+1)/100) * (.1+.9*.5*(1+math.cos(math.pi*step/args.steps)))
         for group in optimizer.param_groups:
             group['lr'] = learning_rate
         optimizer.zero_grad(set_to_none=True)
@@ -84,7 +62,6 @@ def main():
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
         optimizer.step()
-        ema = update_ema(ema, model, step+1, decay=args.ema_decay, start=args.ema_start)
         if (step+1)%100 == 0 or step+1 == args.steps:
             row = {'step':step+1,'loss':loss.item(),'seconds':time.perf_counter()-started-intermediate_validation_seconds}
             history.append(row)
@@ -95,28 +72,18 @@ def main():
             intermediate_validation_seconds += intermediate['seconds']
             validation_history.append({'step':step+1,**intermediate})
             print(json.dumps({'validation':validation_history[-1]}),flush=True)
+        if args.save_every > 0 and (step+1)%args.save_every == 0:
+            torch.save({'protocol':PROTOCOL,'implementation':args.implementation,'config':config,
+                        'model':{k:v.detach().cpu() for k,v in model.state_dict().items()},
+                        'seed':args.seed,'train_tokens':(step+1)*args.batch_size*256,
+                        'step':step+1,'planned_steps':args.steps,
+                        'learning_rate':args.learning_rate,'weight_decay':args.weight_decay},
+                       args.run_dir/f'step-{step+1:05d}.pt')
     if device.type == 'cuda':
         torch.cuda.synchronize(device)
     train_seconds = time.perf_counter()-started-intermediate_validation_seconds
     validation = score(model,*data['validation'],device,'fp32')
     validation.pop('window_nll_nats')
-    ema_result = None
-    if ema is not None:
-        # A separate evaluation model preserves the original weights and optimizer.
-        averaged_model = copy.deepcopy(model)
-        averaged_model.load_state_dict(ema.state_dict())
-        averaged_validation = score(averaged_model, *data['validation'], device, 'fp32')
-        averaged_validation.pop('window_nll_nats')
-        recipe = {'method': 'ema', 'ema_decay': args.ema_decay,
-                  'ema_start': args.ema_start, 'ema_updates': args.steps-args.ema_start}
-        averaged_checkpoint = args.run_dir/'checkpoint-ema.pt'
-        torch.save({'protocol': PROTOCOL, 'implementation': args.implementation,
-                    'config': config, 'model': averaged_model.cpu().state_dict(),
-                    'seed': args.seed, 'train_tokens': args.steps*args.batch_size*256,
-                    'recipe': recipe}, averaged_checkpoint)
-        ema_result = {**recipe, 'validation': averaged_validation,
-                      'checkpoint': averaged_checkpoint.name,
-                      'checkpoint_sha256': sha(averaged_checkpoint)}
     checkpoint = args.run_dir/'checkpoint.pt'
     torch.save({'protocol':PROTOCOL,'implementation':args.implementation,'config':config,
                 'model':model.cpu().state_dict(),'seed':args.seed,
@@ -129,11 +96,10 @@ def main():
               'intermediate_validation_seconds':intermediate_validation_seconds,
               'process_seconds':time.perf_counter()-total_started,
               'torch_version':str(torch.__version__),'threads':args.threads,
+              'learning_rate':args.learning_rate,'weight_decay':args.weight_decay,
+              'trainer_sha256':sha(Path(__file__)),
               'checkpoint_sha256':sha(checkpoint),'implementation_sha256':implementation_sha,
-              'trainer_sha256':sha(Path(__file__)), 'ema_source_sha256':sha(ROOT/'ema.py'),
               **device_metrics(device)}
-    if ema_result is not None:
-        result['ema'] = ema_result
     (args.run_dir/'metrics.json').write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(result|{'history':[]},indent=2),flush=True)
 
