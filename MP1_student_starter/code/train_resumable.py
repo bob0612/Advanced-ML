@@ -1,4 +1,4 @@
-"""CPU training in resumable chunks, preserving optimizer and both RNG states.
+"""CPU/MPS training in resumable chunks, preserving optimizer and all RNG states.
 
 --steps is the complete cosine schedule, --chunk-steps is only a process boundary.
 Chunk boundaries do not restart the optimizer, schedule, sampler or dropout RNG.
@@ -11,8 +11,36 @@ from pathlib import Path
 import time
 import torch
 from torch.nn import functional as F
-from common import ROOT, PROTOCOL, load_data, make_model, setup, sha
+from tokenizers import Tokenizer
+from common import ROOT, PROTOCOL, make_model, setup, sha
 from evaluate import score
+
+
+def load_development_data():
+    """Verify and tokenize only the development splits; never open test text."""
+    directory = ROOT / 'data'
+    manifest = json.loads((directory / 'manifest.json').read_text())
+    names = ('tokenizer.json', 'wikitext_train.txt', 'wikitext_validation.txt')
+    for name in names:
+        if sha(directory / name) != manifest['sha256'][name]:
+            raise ValueError(f'Changed benchmark file: {name}')
+    tokenizer = Tokenizer.from_file(str(directory / 'tokenizer.json'))
+    data = {}
+    for split in ('train', 'validation'):
+        raw = (directory / f'wikitext_{split}.txt').read_bytes()
+        data[split] = (torch.tensor(tokenizer.encode(raw.decode('utf-8')).ids,
+                                   dtype=torch.long), len(raw))
+    return data
+
+
+def score_validation(model, split):
+    """Use the original CPU FP32 scorer without changing the training RNG/device."""
+    if next(model.parameters()).device.type == 'cpu':
+        return score(model, *split, torch.device('cpu'), 'fp32')
+    with torch.random.fork_rng(devices=[]):
+        replica, _ = make_model('student', model.config, torch.device('cpu'))
+        replica.load_state_dict({k: v.detach().cpu() for k, v in model.state_dict().items()})
+        return score(replica, *split, torch.device('cpu'), 'fp32')
 
 
 def atomic_save(payload, path):
@@ -22,8 +50,12 @@ def atomic_save(payload, path):
 
 
 def capture_training(model, optimizer, rng):
-    return {'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
-            'torch_rng': torch.get_rng_state(), 'sampler_rng': rng.get_state()}
+    state = {'model': model.state_dict(), 'optimizer': optimizer.state_dict(),
+             'torch_rng': torch.get_rng_state(), 'sampler_rng': rng.get_state()}
+    if next(model.parameters()).device.type == 'mps':
+        torch.mps.synchronize()
+        state['mps_rng'] = torch.mps.get_rng_state()
+    return state
 
 
 def restore_training(state, model, optimizer, rng):
@@ -31,6 +63,8 @@ def restore_training(state, model, optimizer, rng):
     optimizer.load_state_dict(state['optimizer'])
     torch.set_rng_state(state['torch_rng'])
     rng.set_state(state['sampler_rng'])
+    if next(model.parameters()).device.type == 'mps':
+        torch.mps.set_rng_state(state['mps_rng'])
 
 
 def record_interrupted_work(run_dir, recovery_step, batch_size, prior_seconds):
@@ -66,6 +100,7 @@ def main():
     p.add_argument('--batch-size', type=int, default=32)
     p.add_argument('--eval-every', type=int, default=600)
     p.add_argument('--threads', type=int, default=4)
+    p.add_argument('--device', choices=['cpu', 'mps'], default='cpu')
     p.add_argument('--seed', type=int, default=17)
     p.add_argument('--resume', action='store_true')
     args = p.parse_args()
@@ -73,10 +108,16 @@ def main():
         p.error('Step/batch counts must be positive; evaluation interval nonnegative.')
     process_started = time.perf_counter()
     device, precision = setup('cpu', 'fp32', args.threads)
+    if args.device == 'mps':
+        if not torch.backends.mps.is_available():
+            p.error('MPS is unavailable in this process.')
+        device = torch.device('mps')
     config = json.loads(args.config.read_text())
     recipe = {'config': config, 'steps': args.steps, 'batch_size': args.batch_size,
               'seed': args.seed, 'learning_rate': .001, 'weight_decay': .1,
               'threads': args.threads, 'precision': precision}
+    if args.device != 'cpu':
+        recipe['device'] = args.device
     resume_path = args.run_dir/'training_state.pt'
     if args.resume and not resume_path.exists():
         p.error('Resume state does not exist.')
@@ -99,7 +140,7 @@ def main():
         record_interrupted_work(args.run_dir, start_step, args.batch_size, prior_seconds)
     if start_step >= args.steps:
         p.error('This run is already complete.')
-    data = load_data()
+    data = load_development_data()
     tokens = data['train'][0]
     end_step = min(args.steps, start_step + args.chunk_steps)
     preparation_seconds = time.perf_counter() - process_started
@@ -107,7 +148,7 @@ def main():
     validation_seconds = 0.
     for step in range(start_step, end_step):
         starts = torch.randint(len(tokens)-257, (args.batch_size,), generator=rng)
-        batch = tokens[starts[:, None] + torch.arange(257)]
+        batch = tokens[starts[:, None] + torch.arange(257)].to(device)
         rate = .001 * min(1., (step+1)/100) * (.1+.9*.5*(1+math.cos(math.pi*step/args.steps)))
         for group in optimizer.param_groups:
             group['lr'] = rate
@@ -116,6 +157,8 @@ def main():
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.)
         optimizer.step()
+        if device.type == 'mps':
+            torch.mps.synchronize()
         if (step+1) % 100 == 0 or step+1 == end_step:
             row = {'step': step+1, 'loss': loss.item(),
                    'seconds': prior_seconds + time.perf_counter()-training_started-validation_seconds}
@@ -130,9 +173,11 @@ def main():
         temporary.write_text(json.dumps(progress)+'\n')
         os.replace(temporary, args.run_dir/'progress.json')
         if (args.eval_every and (step+1) % args.eval_every == 0) or step+1 == args.steps:
-            validation = score(model, *data['validation'], device, 'fp32')
+            validation_started = time.perf_counter()
+            validation = score_validation(model, data['validation'])
             validation.pop('window_nll_nats')
-            validation_seconds += validation['seconds']
+            validation['validation_wall_seconds'] = time.perf_counter() - validation_started
+            validation_seconds += validation['validation_wall_seconds']
             validations.append({'step': step+1, **validation})
             print(json.dumps({'validation': validations[-1]}), flush=True)
     train_seconds = prior_seconds + time.perf_counter()-training_started-validation_seconds
@@ -165,7 +210,7 @@ def main():
               'validation': validations[-1] if validations else None,
               'checkpoint_sha256': sha(args.run_dir/'checkpoint.pt'),
               'implementation_sha256': implementation_sha, 'trainer_sha256': sha(Path(__file__)),
-              'torch_version': str(torch.__version__), 'device': 'cpu'}
+              'torch_version': str(torch.__version__), 'device': str(device)}
     (args.run_dir/'metrics.json').write_text(json.dumps(result, indent=2)+'\n')
     print(json.dumps({'chunk_complete': chunk, 'step': end_step, 'complete': result['complete']}), flush=True)
 

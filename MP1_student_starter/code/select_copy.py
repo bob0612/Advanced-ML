@@ -4,8 +4,9 @@ import json
 from pathlib import Path
 import time
 import torch
-from common import PROTOCOL, load_data, make_model, setup, sha
+from common import PROTOCOL, make_model, setup, sha
 from evaluate import score
+from train_resumable import load_development_data
 
 
 # Declared search space; all trials, including the identity, are recorded.
@@ -42,7 +43,7 @@ def main():
     checkpoint = torch.load(args.checkpoint, map_location='cpu', weights_only=True)
     if checkpoint['protocol'] != PROTOCOL:
         raise ValueError('Wrong protocol.')
-    data = load_data()
+    data = load_development_data()
     model, implementation_sha = make_model('student', checkpoint['config'], device)
     model.load_state_dict(checkpoint['model'])
     trials = []

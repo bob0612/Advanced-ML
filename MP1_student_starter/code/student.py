@@ -80,5 +80,65 @@ class CopyGPT(GPT):
         return torch.where(mass > 0, mixed, neural)
 
 
+def apply_rotary(x, positions):
+    """Rotate adjacent channel pairs; attention depends on relative positions."""
+    dimensions = x.shape[-1]
+    frequencies = 10000. ** (-torch.arange(0, dimensions, 2, device=x.device).float() / dimensions)
+    angles = positions.float()[:, None] * frequencies[None, :]
+    cosine, sine = angles.cos(), angles.sin()
+    even, odd = x[..., ::2], x[..., 1::2]
+    return torch.stack((even * cosine - odd * sine,
+                        even * sine + odd * cosine), dim=-1).flatten(-2)
+
+
+class RotaryBlock(nn.Module):
+    def __init__(self, width, heads, dropout):
+        super().__init__()
+        self.heads = heads
+        hidden = 64 * ((8 * width + 191) // 192)
+        self.norm1, self.norm2 = nn.RMSNorm(width, eps=1e-5), nn.RMSNorm(width, eps=1e-5)
+        self.qkv = nn.Linear(width, 3 * width, bias=False)
+        self.proj = nn.Linear(width, width, bias=False)
+        self.gate_up = nn.Linear(width, 2 * hidden, bias=False)
+        self.down = nn.Linear(hidden, width, bias=False)
+        self.dropout = nn.Dropout(dropout)
+
+    def forward(self, x):
+        batch, length, width = x.shape
+        q, k, v = self.qkv(self.norm1(x)).view(
+            batch, length, 3, self.heads, width // self.heads).permute(2, 0, 3, 1, 4)
+        positions = torch.arange(length, device=x.device)
+        attended = F.scaled_dot_product_attention(
+            apply_rotary(q, positions), apply_rotary(k, positions), v, is_causal=True)
+        x = x + self.dropout(self.proj(attended.transpose(1, 2).reshape(batch, length, width)))
+        gate, up = self.gate_up(self.norm2(x)).chunk(2, dim=-1)
+        return x + self.dropout(self.down(F.silu(gate) * up))
+
+
+class RotaryCopyGPT(CopyGPT):
+    """From-scratch RoPE/RMSNorm/SwiGLU backbone with the same causal mixture."""
+    def __init__(self, config):
+        super().__init__(config)
+        if (config['width'] // config['heads']) % 2:
+            raise ValueError('Rotary attention requires an even head dimension.')
+        del self.pos
+        self.blocks = nn.ModuleList([
+            RotaryBlock(config['width'], config['heads'], config.get('dropout', 0.))
+            for _ in range(config['depth'])])
+        self.blocks.apply(self.initialize)
+        self.norm = nn.RMSNorm(config['width'], eps=1e-5)
+        for block in self.blocks:
+            nn.init.normal_(block.proj.weight, std=.02 / (2 * config['depth']) ** .5)
+            nn.init.normal_(block.down.weight, std=.02 / (2 * config['depth']) ** .5)
+
+    def features(self, ids):
+        x = self.embedding_dropout(self.token(ids))
+        for block in self.blocks:
+            x = block(x)
+        return self.norm(x)
+
+
 def build_model(config):
+    if config.get('architecture') == 'rotary':
+        return RotaryCopyGPT(config)
     return CopyGPT(config)
