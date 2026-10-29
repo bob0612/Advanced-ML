@@ -1,0 +1,4 @@
+full_3seeds      cv_all=91.88 cv_hard=81.74 (n_hard=2114)
+full_1seed       cv_all=91.69 cv_hard=81.32 (n_hard=2114)
+no_arith_1seed   cv_all=91.74 cv_hard=81.41 (n_hard=2114)
+emb_only         cv_all=90.64 cv_hard=79.23 (n_hard=2114)

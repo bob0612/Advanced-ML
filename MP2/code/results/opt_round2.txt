@@ -1,0 +1,10 @@
+baseline                                 cv_all=91.88 cv_hard=81.74 val_all=92.86 val_hard=83.94
+cross                                    cv_all=91.84 cv_hard=81.65 val_all=93.36 val_hard=85.07
+cluster                                  cv_all=92.03 cv_hard=82.07 val_all=92.61 val_hard=83.38
+raw                                      cv_all=91.80 cv_hard=81.55 val_all=92.61 val_hard=83.38
+cross+cluster                            cv_all=91.95 cv_hard=81.88 val_all=92.98 val_hard=84.23
+cross+cluster+raw                        cv_all=91.84 cv_hard=81.65 val_all=92.73 val_hard=83.66
+baseline {'max_iter': 600, 'learning_rate': 0.03} cv_all=91.90 cv_hard=81.79 val_all=92.73 val_hard=83.66
+baseline {'max_leaf_nodes': 7}           cv_all=91.88 cv_hard=81.74 val_all=92.73 val_hard=83.66
+baseline {'max_leaf_nodes': 31, 'min_samples_leaf': 50} cv_all=91.82 cv_hard=81.60 val_all=92.73 val_hard=83.66
+baseline {'l2_regularization': 5.0, 'min_samples_leaf': 40} cv_all=91.82 cv_hard=81.60 val_all=92.86 val_hard=83.94

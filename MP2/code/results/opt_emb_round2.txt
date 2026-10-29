@@ -1,0 +1,10 @@
+centred LR C=0.001                   cv_hard=79.09 val_hard=81.41
+centred LR C=0.003                   cv_hard=79.23 val_hard=81.41
+l2norm+centred LR C=0.003            cv_hard=79.38 val_hard=79.44
+centred+raw LR                       cv_hard=78.71 val_hard=81.69
+shrinkage LDA 0.1                    cv_hard=79.80 val_hard=80.56
+shrinkage LDA 0.3                    cv_hard=79.00 val_hard=80.28
+shrinkage LDA 0.6                    cv_hard=77.39 val_hard=79.44
+PCA64 + squares LR                   cv_hard=74.27 val_hard=76.90
+PCA128 + squares LR                  cv_hard=74.88 val_hard=76.62
+ensemble centredLR+LDA+rawLR         cv_hard=79.23 val_hard=79.44
