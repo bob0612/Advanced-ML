@@ -59,6 +59,13 @@ I ran a second round of experiments after the method was frozen. Each candidate 
 \end{itemize}
 Every change stayed within one standard error, or its CV and validation results moved in opposite directions. Adopting the validation winner (cross features) would have meant fitting to noise in 355 questions. The evidence suggests that a \emph{linear read-out of the frozen embeddings is saturated} at about 80\% on hard groups. Further gains would need information that is not in the inputs, such as re-solving the problem, which the offline rule forbids. Logs: \texttt{code/results/opt\_round2.txt} and \texttt{opt\_emb\_round2.txt}.
 
+\paragraph{Third round, targeting the observed failure modes.} The error analysis suggested two more ideas.
+\begin{itemize}
+\item \emph{Missed conditions.} I measured how many of the question's quantities a solution actually uses, counting digits, number words such as ``twice'' or ``dozen'', and percentages. I also measured how far an answer's magnitude is from the group median. Both features do separate the classes: wrong candidates leave 0.25 conditions unused against 0.18 for correct ones, and their magnitude deviation is 0.31 against 0.10.
+\item \emph{Retrieval.} I scored each candidate by the correctness of its 50 nearest train candidates in a 64-d PCA space.
+\end{itemize}
+Neither moved the selection result, averaged over two CV seeds. Coverage gave 81.79\% against a baseline of 81.79\%, and kNN gave 81.65\%. kNN alone reached only 67.9\% on val-hard. The coverage signal is apparently already captured by the embedding margin and the existing answer features. Retrieval fails because nearby train questions do not share the current question's failure mode. The model was therefore not changed (log: \texttt{code/results/opt\_round3.txt}).
+
 \section{Results}
 \begin{table}[h]\centering\small
 \begin{tabular}{lcccc}\toprule

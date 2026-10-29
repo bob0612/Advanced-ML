@@ -1,0 +1,10 @@
+kNN alone val_hard=67.89
+cov feat 0: mean_correct=0.960 mean_wrong=0.942
+cov feat 1: mean_correct=0.175 mean_wrong=0.252
+cov feat 2: mean_correct=0.022 mean_wrong=0.024
+cov feat 3: mean_correct=-0.013 mean_wrong=-0.035
+cov feat 4: mean_correct=0.099 mean_wrong=0.305
+baseline             cv_hard=81.79 (81.74 / 81.84) val_all=92.86 val_hard=83.94
+cov                  cv_hard=81.79 (81.65 / 81.93) val_all=92.98 val_hard=84.23
+knn                  cv_hard=81.65 (81.84 / 81.46) val_all=92.61 val_hard=83.38
+cov+knn              cv_hard=81.60 (81.36 / 81.84) val_all=92.73 val_hard=83.66
