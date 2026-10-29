@@ -1,7 +1,7 @@
 # MP2 submission: two-stage verifier
 
 **Test accuracy (official scorer): 82.44% (385/467)**. Validation: 92.86% overall, 83.94% on the hard subset.
-Report: [`report/report.pdf`](report/report.pdf) (4 pages). Official score JSONs are in [`code/results/`](code/results/).
+Report: [`report/report.pdf`](report/report.pdf) (5 pages). Official score JSONs are in [`code/results/`](code/results/).
 
 ## Method in one paragraph
 Stage 1 is a logistic regression on group-centred, standardised frozen embeddings. Stage 2 is a gradient-boosted ranker over
@@ -49,7 +49,7 @@ python experiments/figures.py    # report figures (needs matplotlib)
 
 ## Resources
 - Local hardware: Apple M5 (10 cores), macOS. Python 3.12.15, numpy 2.5.3, scikit-learn 1.9.1, scipy 1.18.1.
-- Prediction plus scoring on the full test bank with 4 threads takes **1.34 s wall**, measured externally with `/usr/bin/time`.
+- Prediction plus scoring on the full test bank with 4 threads takes **1.34 s wall**, measured externally with `/usr/bin/time`. The very first run in a freshly created venv took about 6.4 s, because Python compiles the sklearn/scipy bytecode on first import. That is still well under 30 s.
 - Inference assets total 1,197,761 B (1.14 MiB), under the 16 MiB limit.
 - Seeds: KFold seed 0, ranker seeds 0, 1 and 2. Retraining reproduces identical hashes and predictions.
 
