@@ -19,7 +19,7 @@ c["llm"] = {"enabled": True, "n": 4, "reserve": 3, "max_new_tokens": 256}
 json.dump(c, open(sys.argv[1], "w"), indent=1)
 PY
 export MP3_BASE_MODEL="$WORK/qwen3-0.6b" MP3_ADAPTER_DIR="$OUT/adapter" MP3_LLM_DEVICE=cuda MP3_LLM_LOG="$OUT/llm-log-val.jsonl"
-python -m mp3_sql.predict --split validation --checkpoint "$OUT/config-llm.json" --workers 1 --output "$OUT/val.json"
+python -m mp3_sql.predict --split validation --method submission/submission.py --checkpoint "$OUT/config-llm.json" --workers 1 --output "$OUT/val.json"
 python -m mp3_sql.score --split validation --predictions "$OUT/val.json" --output "$OUT/val-score.json"
 python -c "import json;s=json.load(open('$OUT/val-score.json'));print({k:v for k,v in s.items() if not isinstance(v,(list,dict))})"
 echo "RUN DONE $TAG"
