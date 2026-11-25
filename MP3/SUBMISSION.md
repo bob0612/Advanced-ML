@@ -9,7 +9,7 @@ pool from the draft, the hints and sqlglot rewrites (projection alignment and co
 COUNT(*) normalisation, argmax-to-LIMIT 1, "both"-to-INTERSECT, literal capitalisation). It checks candidates in order of a learned
 prior and submits the one with the highest learned ranker score (logistic regressions fitted on the train split only). When no checked
 candidate reproduces the public example, it asks `Qwen/Qwen3-0.6B` with a LoRA adapter (trained on the train split only, 1,359 prompt
-variants) for up to 6 new SQL proposals, checks them and submits one that matches.
+variants) for up to 6 new SQL proposals for its last check, and submits a proposal that matches. When to call the model was chosen by 5-fold cross-fitting on train.
 
 ## Files
 | Path | Purpose |
@@ -26,7 +26,7 @@ The LoRA adapter (`mp3-lora-adapter.zip`, 37 MB, adapter weights only) is submit
 See [`submission/README.md`](submission/README.md) for the full commands, including the graded live-LLM run.
 
 ## Resources
-- Live LLM (graded configuration): Linux, Python 3.12.3, PyTorch 2.7.1, transformers 4.53.2, peft 0.17.1; 4 cores (`taskset -c 0-3`), 4 threads, no GPU, offline. Test prediction 2,190 s wall (36 min), peak RSS 5,239 MiB; the model was called on 134 of 240 tasks.
+- Live LLM (graded configuration): Linux, Python 3.12.3, PyTorch 2.7.1, transformers 4.53.2, peft 0.17.1; 4 cores (`taskset -c 0-3`), 4 threads, no GPU, offline. Test prediction 674 s wall (11 min), peak RSS 5,067 MiB; the model was called on 29 of 240 tasks.
 - CPU-only controller: about 30 s wall for test, peak RSS below 80 MiB, no model needed.
 - LoRA training and the validation sweeps used rented GPUs (RunPod).
 

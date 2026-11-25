@@ -37,7 +37,7 @@ PYTHONPATH="$PWD/submission" taskset -c 0-3 python -m mp3_sql.predict --split te
   --method submission/submission.py --checkpoint submission/config.json --output outputs/test.json
 python -m mp3_sql.score --split test --predictions outputs/test.json --output outputs/test-score.json
 ```
-Expected: `"correct": 187`, `"n": 240`. Measured: 36 min wall, peak RSS 5.1 GB. Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
+Expected: `"correct": 187`, `"n": 240`. Measured: 11 min wall, peak RSS 5.0 GB (the model is called on 29 of 240 tasks). Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
 
 Without `MP3_BASE_MODEL` the agent prints one warning and runs the CPU-only controller (182/240, about 32 s, no model dependencies needed).
 

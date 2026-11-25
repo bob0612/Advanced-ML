@@ -3,7 +3,7 @@ title: "DASE7506 MP3: A Feedback-Driven SQL Repair Agent with a LoRA Proposer"
 author: "Student ID 3036797441"
 ---
 
-**Official test result: 187 / 240 correct (77.92%)**, measured with the unchanged `mp3_sql.predict` and `mp3_sql.score` on all three grading instances per task, in the graded live-LLM configuration: CPU only, 4 threads, `--workers 1`. The starter draft scores 88 / 240 (36.67%). Validation: 101 / 120 (84.17%) against 47 / 120 for the draft. The agent is a deterministic controller with a learned ranker (Sections 1–5) plus one approved live model, `Qwen/Qwen3-0.6B` with a LoRA adapter trained on the train split (Section 6), which proposes new SQL when no other candidate reproduces the public example. Test prediction takes 36 min on 4 CPU threads with a peak of 5.1 GB resident memory. Without the model (no `MP3_BASE_MODEL`), the same export runs as the CPU-only controller: 182 / 240 on test in about 32 s.
+**Official test result: 187 / 240 correct (77.92%)**, measured with the unchanged `mp3_sql.predict` and `mp3_sql.score` on all three grading instances per task, in the graded live-LLM configuration: CPU only, 4 threads, `--workers 1`. The starter draft scores 88 / 240 (36.67%). Validation: 101 / 120 (84.17%) against 47 / 120 for the draft. The agent is a deterministic controller with a learned ranker (Sections 1–5) plus one approved live model, `Qwen/Qwen3-0.6B` with a LoRA adapter trained on the train split (Section 6), which proposes new SQL when no other candidate reproduces the public example. Test prediction takes 11 min on 4 CPU threads with a peak of 5.0 GB resident memory. Without the model (no `MP3_BASE_MODEL`), the same export runs as the CPU-only controller: 182 / 240 on test in about 32 s.
 
 # 1. Agent loop
 
@@ -113,12 +113,26 @@ The validation differences between the rewrite variants are only 1–2 tasks. Th
 | LoRA trained 5 epochs, trigger ≤ 6 | 97 |
 | LoRA r = 32, trigger ≤ 6 | 97 |
 | Same as the 99 row, retrained on a second GPU (reproducibility check) | 99 |
-| **Augmented data (3 variants per task, 1,359 examples), 2 epochs, trigger ≤ 6 (submitted)** | **101** |
+| Augmented data (3 variants per task, 1,359 examples), 2 epochs, trigger ≤ 6 | 101 |
+| Augmented data, 2 epochs, trigger ≤ 3 | 101 |
+| **Augmented data, 2 epochs, trigger ≤ 2 (submitted, chosen by cross-fitting below)** | **100** |
 | Augmented data, 3 epochs, trigger ≤ 6 | 98 |
 
-The LoRA adapter beats the untrained base model, and calling the model earlier helps. Longer training and a larger rank overfit the 480 examples. Differences of one or two tasks are within noise on 120 tasks. Before the CPU runs we fixed one rule: adopt the augmented adapter only if its CPU validation score is at least that of the first adapter (97). It scored 101, so it was adopted. On its own, the greedy LoRA completion is correct for 80 of 120 validation tasks, and some proposal is correct for 96; the controller's pool is still better (96), which is why the model is used as a fallback generator rather than as the main policy. A rule that let model proposals override a matching pool candidate gained 5 tasks but lost 7, so it was rejected.
+The LoRA adapter beats the untrained base model. On validation, calling the model earlier looked slightly better, but the cross-fitting below shows the opposite on 480 held-out train tasks. Longer training and a larger rank overfit the 480 examples. Differences of one or two tasks are within noise on 120 tasks. Before the CPU runs we fixed one rule: adopt the augmented adapter only if its CPU validation score is at least that of the first adapter (97). It scored 101, so it was adopted. On its own, the greedy LoRA completion is correct for 80 of 120 validation tasks, and some proposal is correct for 96; the controller's pool is still better (96), which is why the model is used as a fallback generator rather than as the main policy. A rule that let model proposals override a matching pool candidate gained 5 tasks but lost 7, so it was rejected.
 
-**Graded configuration.** The final runs use CPU float32 with 4 threads (`taskset -c 0-3`, `OMP_NUM_THREADS=4`). Sampling on CPU draws different random numbers from the GPU, so CPU and GPU scores can differ by a few tasks (first adapter: 97 on CPU, 99 on GPU; submitted adapter: 101 on both); the CPU figures are the ones reported.
+**Cross-fitting on train (choosing when to call the model).** 120 validation tasks cannot separate settings that differ by one or two tasks, and the validation sweep above had favoured calling the model early. We therefore also evaluated on the train split without leakage: the 480 train tasks were split into 5 folds grouped by database, and for each fold the ranker and the LoRA adapter were refitted without that fold (`tools/train_ranker.py --exclude-ids`, `tools/train_lora.py --exclude-ids`, same recipe) and the full agent was run on the held-out fold (`experiments/crossfit.sh`, GPU). Correct out of 480:
+
+| Setting | Held-out train (480) |
+|---|---:|
+| No model (CPU-only controller, fold-refitted ranker) | 394 |
+| Model when ≤ 6 calls remain (previous setting) | 391 |
+| Model when ≤ 5 / ≤ 4 calls remain | 395 / 395 |
+| Model when ≤ 3 calls remain | 398 |
+| **Model when ≤ 2 calls remain** | **400** |
+
+Calling the model as soon as the draft and hints fail to reproduce the example (≤ 6) was *worse* than no model: the model's checks used the budget before the pool's own matching candidates were checked (12 tasks gained, 15 lost). With ≤ 2 the pool is checked first, and the model is asked only for the last check when nothing matched; it then runs on 45 of 480 tasks and gains 9 tasks while losing 3. The rule fixed in advance was to adopt a setting only if it beat both the no-model and the previous setting by at least 3 on held-out train and lost at most 2 on validation; ≤ 2 met both (validation 100 on GPU, 101 on CPU) and was adopted. On train plus validation (600 tasks) it scores 500 against 492 for the previous setting.
+
+**Graded configuration.** The final runs use CPU float32 with 4 threads (`taskset -c 0-3`, `OMP_NUM_THREADS=4`). Sampling on CPU draws different random numbers from the GPU, so CPU and GPU scores can differ by a few tasks (first adapter: 97 on CPU, 99 on GPU; submitted setting: 101 on CPU, 100 on GPU); the CPU figures are the ones reported.
 
 # 7. Results, cost and runtime
 
@@ -127,9 +141,9 @@ The LoRA adapter beats the untrained base model, and calling the model earlier h
 | Validation (120) | 47 (39.17%) | 96 (80.00%) | **101 (84.17%)** |
 | Test (240) | 88 (36.67%) | 182 (75.83%) | **187 (77.92%)** |
 
-Mean charged calls per task with the proposer: 6.40 on validation and 6.54 on test (budget 8). The test split was evaluated four times, each time with a frozen method chosen beforehand on validation: the first CPU-only version (179), the second (182), the first LoRA adapter (187) and the submitted augmented adapter (187). Test results were never used to choose between variants. Given the same files, library versions and thread count, the run is deterministic: sampling uses fixed per-task seeds.
+Mean charged calls per task with the proposer: 6.11 on validation and 6.06 on test (budget 8). The test split was evaluated five times, each time with a frozen method chosen beforehand on validation or train cross-fitting: the first CPU-only version (179), the second (182), the first LoRA adapter (187), the augmented adapter with the early trigger (187) and the submitted setting (187). Test results were never used to choose between variants. Given the same files, library versions and thread count, the run is deterministic: sampling uses fixed per-task seeds.
 
-**Runtime and resources (live LLM, graded configuration).** Measured on a RunPod Linux container, Python 3.12.3, PyTorch 2.7.1, transformers 4.53.2 and peft 0.17.1 (`requirements-model.txt`), with the process pinned to 4 cores and 4 threads, no GPU visible, and the base model and adapter read from local files with the network disabled for Hugging Face. Test prediction took **2,190 s wall (36 min)** and 8,139 s CPU time on an Intel Xeon Gold 6342; the model was called on 134 of 240 tasks (mean prompt 324 tokens). Peak resident memory was **5,239 MiB**. Validation took 1,033 s (model called on 57 of 120 tasks). The first adapter, measured on a slower host CPU, took 4,749 s on test, still within the limit. Both are within the 2-hour and 16 GiB limits. The adapter ZIP is 37 MB.
+**Runtime and resources (live LLM, graded configuration).** Measured on a RunPod Linux container, Python 3.12.3, PyTorch 2.7.1, transformers 4.53.2 and peft 0.17.1 (`requirements-model.txt`), with the process pinned to 4 cores and 4 threads, no GPU visible, and the base model and adapter read from local files with the network disabled for Hugging Face. Test prediction took **674 s wall (11 min)** and 2,229 s CPU time on an Intel Xeon Gold 6342; the model was called on 29 of 240 tasks. Peak resident memory was **5,067 MiB**, mostly the float32 base model. Validation took 319 s (model called on 11 of 120 tasks). The earlier early-trigger setting called the model on 134 test tasks and took 36 min on the same CPU (79 min on a slower host), still within the limit. Both are within the 2-hour and 16 GiB limits. The adapter ZIP is 37 MB.
 
 **Runtime and resources (CPU-only controller).** These were measured on a Linux container with Python 3.12.3, `taskset -c 0-3` (4 CPUs) and `ulimit -v 2097152` (2 GiB address space). Test prediction plus scoring took **32 s wall**: prediction 18.5 s, scoring 12.7 s, 82 s user CPU in total. The peak resident memory of any process stayed below 80 MiB. Each SQL statement runs in the official sandboxed worker subprocess. The agent's own work is parsing and rewriting with `sqlglot`. The export is about 0.1 MB, far below 16 MiB. No model is loaded, no GPU is used and no network is needed. Retraining with `tools/train_ranker.py` reproduces `config.json` byte for byte.
 
