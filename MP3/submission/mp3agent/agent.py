@@ -133,7 +133,8 @@ class RepairAgent:
                                        best["sql"], checked.get(best["sql"]))
         seed = int(sqlops.canonical(observation["task"]["id"]).encode().hex()[:8], 16)
         raw = llm_module.get_proposer(llm).propose(observation["task"]["id"], prompt, n=llm.get("n", 4),
-                                                   max_new_tokens=llm.get("max_new_tokens", 256), seed=seed)
+                                                   max_new_tokens=llm.get("max_new_tokens", 256), seed=seed,
+                                                   temperature=llm.get("temperature", 0.7), top_p=llm.get("top_p", 0.9))
         votes, order = {}, []
         for sql in raw:
             fixed = sqlops.align_projection(sql, observation["example"]["columns"]) or sql

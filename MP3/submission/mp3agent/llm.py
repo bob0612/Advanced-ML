@@ -46,7 +46,7 @@ class Proposer:
         self.log_path = Path(os.environ.get("MP3_LLM_LOG", "outputs/llm-log.jsonl"))
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
 
-    def propose(self, task_id, user_prompt, n=4, max_new_tokens=256, seed=0):
+    def propose(self, task_id, user_prompt, n=4, max_new_tokens=256, seed=0, temperature=0.7, top_p=0.9):
         """Return up to n SQL strings: one greedy completion plus n-1 seeded samples (n <= 6)."""
         n = max(1, min(int(n), 6))
         max_new_tokens = min(int(max_new_tokens), 2048)
@@ -63,7 +63,7 @@ class Proposer:
             if n > 1:
                 torch.manual_seed(seed)
                 sampled = self.model.generate(**inputs, max_new_tokens=max_new_tokens, do_sample=True,
-                                              temperature=0.7, top_p=0.9, num_return_sequences=n - 1)
+                                              temperature=temperature, top_p=top_p, num_return_sequences=n - 1)
                 outputs.extend(sampled)
         width = inputs["input_ids"].shape[1]
         texts, sqls = [], []
@@ -74,7 +74,8 @@ class Proposer:
             sqls.append(prompting.extract_sql(texts[-1][0]))
         record = {"task": task_id, "model": self.identity, "prompt": text, "prompt_tokens": int(width),
                   "completions": [{"text": t, "new_tokens": k} for t, k in texts],
-                  "seconds": round(time.perf_counter() - started, 3), "max_new_tokens": max_new_tokens}
+                  "seconds": round(time.perf_counter() - started, 3), "max_new_tokens": max_new_tokens,
+                  "n": n, "temperature": temperature, "top_p": top_p, "seed": seed}
         with _lock:
             with self.log_path.open("a", encoding="utf-8") as handle:
                 handle.write(json.dumps(record, ensure_ascii=False) + "\n")
