@@ -95,6 +95,14 @@ class RepairAgent:
             for sql in proposals:
                 if sql not in checked and len(sql.encode()) <= MAX_SQL:
                     return {"tool": "check", "sql": sql}
+            # Lazy mode: the greedy completion came first; sample more only if it did not reproduce the example.
+            if llm.get("lazy") and self._llm_stage == 1 and not any(
+                    (checked.get(s) or {}).get("matches_example") for s in proposals):
+                proposals = self._llm_candidates(observation, pool, checked, context, executed["__schema__"], llm,
+                                                 stage=2)
+                for sql in proposals:
+                    if sql not in checked and len(sql.encode()) <= MAX_SQL:
+                        return {"tool": "check", "sql": sql}
         # Step 3: check unverified candidates in prior order while budget remains.
         if remaining > 0 and n_checks < self.max_checks and pending:
             return {"tool": "check", "sql": pending[0]["sql"]}
@@ -121,9 +129,10 @@ class RepairAgent:
         return {"tool": "submit", "sql": best}
 
 
-    def _llm_candidates(self, observation, pool, checked, context, schema, llm):
-        """Generate once per task; returns de-duplicated SQL ordered by vote count then rank."""
-        if getattr(self, "_llm", None) is not None:
+    def _llm_candidates(self, observation, pool, checked, context, schema, llm, stage=1):
+        """Generate once per task (lazy mode: greedy first, samples in stage 2); returns
+        de-duplicated SQL ordered by vote count then rank."""
+        if getattr(self, "_llm", None) is not None and getattr(self, "_llm_stage", 0) >= stage:
             return self._llm
         from mp3agent import llm as llm_module, prompting
         best = max(pool, key=lambda c: self._score(observation, c, checked.get(c["sql"]), context))
@@ -132,9 +141,18 @@ class RepairAgent:
                                        observation["example"], draft, checked.get(draft),
                                        best["sql"], checked.get(best["sql"]))
         seed = int(sqlops.canonical(observation["task"]["id"]).encode().hex()[:8], 16)
-        raw = llm_module.get_proposer(llm).propose(observation["task"]["id"], prompt, n=llm.get("n", 4),
+        n = int(llm.get("n", 4))
+        if llm.get("lazy"):  # stage 1: greedy only; stage 2: the n-1 samples
+            mode = "greedy" if stage == 1 else "sample"
+            n = 1 if stage == 1 else n - 1
+        else:
+            mode = "both"
+        raw = llm_module.get_proposer(llm).propose(observation["task"]["id"], prompt, n=n,
                                                    max_new_tokens=llm.get("max_new_tokens", 256), seed=seed,
-                                                   temperature=llm.get("temperature", 0.7), top_p=llm.get("top_p", 0.9))
+                                                   temperature=llm.get("temperature", 0.7), top_p=llm.get("top_p", 0.9),
+                                                   mode=mode)
+        raw = list(getattr(self, "_llm_raw", [])) + raw if stage == 2 else raw
+        self._llm_raw, self._llm_stage = raw, stage
         votes, order = {}, []
         for sql in raw:
             fixed = sqlops.align_projection(sql, observation["example"]["columns"]) or sql
