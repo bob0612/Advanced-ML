@@ -14,6 +14,7 @@ command -v uv >/dev/null || curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="$HOME/.local/bin:$PATH"
 [ -d .venv ] || uv venv -p 3.12 .venv
 source .venv/bin/activate
+uv pip install -q torch==2.7.1 --index-url https://download.pytorch.org/whl/cu128
 uv pip install -q -r requirements.txt -r requirements-model.txt -r submission/requirements-train.txt
 python -m mp3_sql.check_data
 MODEL_DIR="$WORK/qwen3-0.6b"
