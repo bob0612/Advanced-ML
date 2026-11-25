@@ -32,9 +32,13 @@ def main():
     parser.add_argument("--rewrites", default=",".join(REWRITES))
     parser.add_argument("--no-hints", action="store_true")
     parser.add_argument("--workers", type=int, default=4)
+    parser.add_argument("--exclude-ids", type=Path, help="optional JSON list of train task ids to leave out (cross-fitting)")
     args = parser.parse_args()
     rewrites = [r for r in args.rewrites.split(",") if r]
     rows, manifest, folder = load_bank("train", args.data_dir)
+    if args.exclude_ids:
+        exclude = set(json.loads(args.exclude_ids.read_text()))
+        rows = [r for r in rows if r["id"] not in exclude]
     public = json.loads((folder / "public_results.json").read_text())
     refs = json.loads((folder / "train_references.json").read_text())["tasks"]
     hints = json.loads((folder / "repair_hints.json").read_text())
