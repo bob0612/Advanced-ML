@@ -34,7 +34,9 @@ class RepairAgent:
         checked, hints, hint_called, executed = {}, None, False, {}
         for event in observation["history"]:
             tool = event.get("tool")
-            if tool == "check":
+            if tool == "schema":
+                executed["__schema__"] = event.get("observation")
+            elif tool == "check":
                 checked[event["sql"]] = event["observation"]
             elif tool == "execute":
                 executed[event["sql"]] = event["observation"]
@@ -80,12 +82,27 @@ class RepairAgent:
             self._pool_key, self._pool = key, build_pool(draft, hints or [], observation, self.rewrites)
         pool = [dict(c, origins=set(c["origins"])) for c in self._pool]
         context = self._context(observation, pool, checked)
+        llm = self.config.get("llm") or {}
+        any_match = any((checked.get(c["sql"]) or {}).get("matches_example") for c in pool)
+        pending = [c for c in pool if c["sql"] not in checked]
+        pending.sort(key=lambda c: -self._prior(observation, c, context))
+        reserve = int(llm.get("reserve", 3))
+        # Step 3b (optional): when no candidate reproduces the example, ask the LoRA model for new SQL.
+        if llm.get("enabled") and not any_match and remaining > 0 and (remaining <= reserve or not pending):
+            if "__schema__" not in executed:
+                return {"tool": "schema"}
+            proposals = self._llm_candidates(observation, pool, checked, context, executed["__schema__"], llm)
+            for sql in proposals:
+                if sql not in checked and len(sql.encode()) <= MAX_SQL:
+                    return {"tool": "check", "sql": sql}
         # Step 3: check unverified candidates in prior order while budget remains.
-        if remaining > 0 and n_checks < self.max_checks:
-            pending = [c for c in pool if c["sql"] not in checked]
-            if pending:
-                pending.sort(key=lambda c: -self._prior(observation, c, context))
-                return {"tool": "check", "sql": pending[0]["sql"]}
+        if remaining > 0 and n_checks < self.max_checks and pending:
+            return {"tool": "check", "sql": pending[0]["sql"]}
+        # Step 4a: a model proposal that reproduces the example wins when nothing else does.
+        if llm.get("enabled") and not any_match:
+            for sql in getattr(self, "_llm", None) or []:
+                if (checked.get(sql) or {}).get("matches_example"):
+                    return {"tool": "submit", "sql": sql}
         # Step 4: submit the best-scoring candidate.
         if self.selection == "first_match":  # ablation: first candidate (pool order) matching the example
             for cand in pool:
@@ -102,6 +119,33 @@ class RepairAgent:
             if score > best_score:
                 best, best_score = cand["sql"], score
         return {"tool": "submit", "sql": best}
+
+
+    def _llm_candidates(self, observation, pool, checked, context, schema, llm):
+        """Generate once per task; returns de-duplicated SQL ordered by vote count then rank."""
+        if getattr(self, "_llm", None) is not None:
+            return self._llm
+        from mp3agent import llm as llm_module, prompting
+        best = max(pool, key=lambda c: self._score(observation, c, checked.get(c["sql"]), context))
+        draft = observation["issue_sql"]
+        prompt = prompting.user_prompt(observation["task"]["question"], schema if isinstance(schema, list) else [],
+                                       observation["example"], draft, checked.get(draft),
+                                       best["sql"], checked.get(best["sql"]))
+        seed = int(sqlops.canonical(observation["task"]["id"]).encode().hex()[:8], 16)
+        raw = llm_module.get_proposer(llm).propose(observation["task"]["id"], prompt, n=llm.get("n", 4),
+                                                   max_new_tokens=llm.get("max_new_tokens", 256), seed=seed)
+        votes, order = {}, []
+        for sql in raw:
+            fixed = sqlops.align_projection(sql, observation["example"]["columns"]) or sql
+            key = sqlops.canonical(fixed)
+            if key not in votes:
+                votes[key] = [0, fixed]
+                order.append(key)
+            votes[key][0] += 1
+        known = {sqlops.canonical(c["sql"]) for c in pool}
+        ranked = sorted((k for k in order if k not in known), key=lambda k: -votes[k][0])
+        self._llm = [votes[k][1] for k in ranked]
+        return self._llm
 
 
 def create(config):
