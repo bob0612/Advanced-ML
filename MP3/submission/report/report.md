@@ -15,7 +15,7 @@ The agent is a perceive-plan-act controller. Its decisions depend only on the cu
 4. **Act: verify candidates.** While budget remains, the agent `check`s the unverified candidate with the highest *prior* score, a logistic model over features that need no execution. Each check returns real execution feedback: success or error, columns, the first 8 rows, the row count and `matches_example`.
 5. **Submit.** A second logistic model, the *ranker*, scores every candidate. It uses the static features, the candidate's own check feedback, and the feedback of its *DISTINCT twins* (Section 4). The agent submits the top candidate. `submit` is free.
 
-6. **Ask the LoRA model (live-LLM configuration only).** If no checked candidate reproduces the example and at most 2 charged calls remain (or nothing is left to check), the agent calls `schema`, builds a prompt and asks the LoRA model for SQL. Its top proposal is checked like any other candidate (with 2 calls left: `schema`, then one check), and a proposal that reproduces the example is submitted when no pool candidate does (Section 6).
+6. **Ask the LoRA model (live-LLM configuration only).** If no checked candidate reproduces the example and at most 2 charged calls remain (or nothing is left to check), the agent calls `schema`, builds a prompt and asks the LoRA model for SQL. Its proposals are checked like any other candidate while budget remains (usually just the top one: `schema`, then one check), and a proposal that reproduces the example is submitted when no pool candidate does (Section 6).
 
 Without the model, the agent uses 5.91 charged calls per task on test (minimum 3, maximum 8) and never calls `schema` or `retrieve` (see Section 3).
 
