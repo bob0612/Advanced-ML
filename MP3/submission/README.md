@@ -1,6 +1,6 @@
 # DASE7506 MP3: feedback-driven SQL repair agent with a LoRA proposer
 
-**Official test result: 187/240 = 77.92%** (`outputs/test-score.json`), in the graded live-LLM configuration: `Qwen/Qwen3-0.6B` + our LoRA adapter, CPU only, 4 threads, `--workers 1`. Validation: 97/120 = 80.83%.
+**Official test result: 187/240 = 77.92%** (`outputs/test-score.json`), in the graded live-LLM configuration: `Qwen/Qwen3-0.6B` + our LoRA adapter, CPU only, 4 threads, `--workers 1`. Validation: 101/120 = 84.17%.
 Without a local model the same export runs as the CPU-only controller: 182/240 on test, 96/120 on validation.
 Report: [`report.pdf`](report.pdf).
 
@@ -37,7 +37,7 @@ PYTHONPATH="$PWD/submission" taskset -c 0-3 python -m mp3_sql.predict --split te
   --method submission/submission.py --checkpoint submission/config.json --output outputs/test.json
 python -m mp3_sql.score --split test --predictions outputs/test.json --output outputs/test-score.json
 ```
-Expected: `"correct": 187`, `"n": 240`. Measured: 79 min wall, peak RSS 5.0 GB. Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
+Expected: `"correct": 187`, `"n": 240`. Measured: 36 min wall, peak RSS 5.1 GB. Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
 
 Without `MP3_BASE_MODEL` the agent prints one warning and runs the CPU-only controller (182/240, about 32 s, no model dependencies needed).
 
@@ -45,9 +45,9 @@ Optional retraining (train split only):
 ```bash
 python -m pip install -r submission/requirements-train.txt
 PYTHONPATH="$PWD:$PWD/submission" python submission/tools/train_ranker.py --output submission/config.json
-PYTHONPATH="$PWD:$PWD/submission" python submission/tools/build_lora_data.py --config submission/config.json --split train --output lora-train.jsonl
-PYTHONPATH="$PWD:$PWD/submission" python submission/tools/train_lora.py --base qwen3-0.6b --data lora-train.jsonl --output lora-adapter  # GPU recommended
+PYTHONPATH="$PWD:$PWD/submission" python submission/tools/build_lora_data.py --config submission/config.json --split train --variants 3 --output lora-train.jsonl
+PYTHONPATH="$PWD:$PWD/submission" python submission/tools/train_lora.py --base qwen3-0.6b --data lora-train.jsonl --output lora-adapter --epochs 2  # GPU recommended
 ```
 
 ## Disclosure
-The only live model is `Qwen/Qwen3-0.6B` (revision `c1899de2…`) with our LoRA adapter, trained on the train split only and loaded from local files (`local_files_only`, safetensors, no remote code). Every prompt and completion is logged with token counts and model/adapter identity (`outputs/llm-log-*.jsonl`). The `repair_hint` tool reads the course's fixed hint cache. LoRA training and the validation sweep used one rented RTX 4090 (RunPod). AI coding assistance (Claude, Anthropic) was used substantially to write the code and the report. Data: only the official Spider-derived package (CC BY-SA 4.0).
+The only live model is `Qwen/Qwen3-0.6B` (revision `c1899de2…`) with our LoRA adapter, trained on the train split only and loaded from local files (`local_files_only`, safetensors, no remote code). Every prompt and completion is logged with token counts and model/adapter identity (`outputs/llm-log-*.jsonl`). The `repair_hint` tool reads the course's fixed hint cache. LoRA training and the validation sweeps used rented GPUs (RunPod: RTX 4090, then A40). AI coding assistance (Claude, Anthropic) was used substantially to write the code and the report. Data: only the official Spider-derived package (CC BY-SA 4.0).
