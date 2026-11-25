@@ -181,7 +181,7 @@
  "llm": {
   "enabled": true,
   "n": 6,
-  "reserve": 6,
+  "reserve": 2,
   "max_new_tokens": 256,
   "temperature": 1.0,
   "top_p": 0.9,
