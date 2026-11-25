@@ -1,0 +1,14 @@
+fold 0 done 83 97
+fold 1 done 79 98
+fold 2 done 81 98
+fold 3 done 76 94
+fold 4 done 72 93
+CF DONE
+r4 45 49
+r5 117 135
+r3 192 229
+r2 267 319
+r2 400 480
+r3 398 480
+r4 395 480
+r5 395 480
