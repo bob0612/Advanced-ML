@@ -26,6 +26,7 @@ def main():
     parser.add_argument("--rank", type=int, default=16)
     parser.add_argument("--alpha", type=int, default=32)
     parser.add_argument("--batch", type=int, default=8)
+    parser.add_argument("--micro", type=int, default=2, help="micro-batch size (gradient accumulation up to --batch)")
     parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
     random.seed(args.seed)
@@ -60,12 +61,19 @@ def main():
         random.shuffle(examples)
         for i in range(0, len(examples), args.batch):
             batch = examples[i:i + args.batch]
-            width = max(len(x) for x, _ in batch)
-            ids = torch.tensor([x + [tok.pad_token_id] * (width - len(x)) for x, _ in batch], device=device)
-            lab = torch.tensor([y + [-100] * (width - len(y)) for _, y in batch], device=device)
-            att = torch.tensor([[1] * len(x) + [0] * (width - len(x)) for x, _ in batch], device=device)
-            loss = model(input_ids=ids, attention_mask=att, labels=lab).loss
-            loss.backward()
+            n_tok = sum(sum(1 for t in y if t != -100) for _, y in batch)
+            total = 0.0
+            for j in range(0, len(batch), args.micro):
+                part = batch[j:j + args.micro]
+                width = max(len(x) for x, _ in part)
+                ids = torch.tensor([x + [tok.pad_token_id] * (width - len(x)) for x, _ in part], device=device)
+                lab = torch.tensor([y + [-100] * (width - len(y)) for _, y in part], device=device)
+                att = torch.tensor([[1] * len(x) + [0] * (width - len(x)) for x, _ in part], device=device)
+                part_tok = sum(sum(1 for t in y if t != -100) for _, y in part)
+                loss = model(input_ids=ids, attention_mask=att, labels=lab).loss * part_tok / max(1, n_tok)
+                loss.backward()
+                total += float(loss)
+            loss = torch.tensor(total)
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             opt.step(); sched.step(); opt.zero_grad()
             log.append({"epoch": epoch, "step": len(log), "loss": round(float(loss), 5)})
