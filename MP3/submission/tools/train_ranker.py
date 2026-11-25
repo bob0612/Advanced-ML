@@ -96,6 +96,10 @@ def main():
                      "positive_candidates": int(y.sum()), "tasks_with_a_correct_candidate": int(oracle),
                      "model": "sklearn LogisticRegression (L2, lbfgs)"},
     }
+    if args.output.is_file():  # keep the (hand-set, validation-selected) live-LLM section
+        previous = json.loads(args.output.read_text())
+        if "llm" in previous:
+            config["llm"] = previous["llm"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(config, indent=1) + "\n")
     print(json.dumps(config["training"]))

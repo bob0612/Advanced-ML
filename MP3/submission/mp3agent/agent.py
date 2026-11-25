@@ -6,6 +6,8 @@ prior order, adding feedback-driven rewrites as evidence arrives -> submit the c
 the highest learned score. All state is re-derived from the observation history every step.
 """
 import math
+import os
+import sys
 
 from mp3agent import features, sqlops
 from mp3agent.candidates import build_pool
@@ -27,6 +29,13 @@ class RepairAgent:
         self.use_hints = config.get("use_hints", True)
         self.max_checks = int(config.get("max_checks", 8))
         self.selection = config.get("selection", "learned")
+        llm = config.get("llm") or {}
+        if llm.get("enabled") and not (os.environ.get("MP3_BASE_MODEL") or llm.get("base_dir")):
+            # No local base model provided: run the CPU-only controller (identical to llm.enabled = false).
+            if not getattr(RepairAgent, "_warned", False):
+                print("mp3agent: MP3_BASE_MODEL not set; running without the live LLM", file=sys.stderr)
+                RepairAgent._warned = True
+            self.config = dict(config, llm=dict(llm, enabled=False))
 
     # ---------------------------------------------------------------- perception
     @staticmethod

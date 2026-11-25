@@ -177,5 +177,17 @@
   "positive_candidates": 1141,
   "tasks_with_a_correct_candidate": 408,
   "model": "sklearn LogisticRegression (L2, lbfgs)"
+ },
+ "llm": {
+  "enabled": true,
+  "n": 6,
+  "reserve": 6,
+  "max_new_tokens": 256,
+  "temperature": 1.0,
+  "top_p": 0.9,
+  "lazy": false,
+  "threads": 4,
+  "adapter": "Qwen/Qwen3-0.6B LoRA r=16 alpha=32 (q,k,v,o,gate,up,down), 3 epochs on train split",
+  "env": "MP3_BASE_MODEL=<Qwen3-0.6B snapshot @ c1899de> MP3_ADAPTER_DIR=<adapter dir>"
  }
 }
