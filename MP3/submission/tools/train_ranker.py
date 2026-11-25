@@ -21,7 +21,7 @@ from mp3_sql.sqlite_tool import execute_sql
 from mp3agent import features, sqlops
 from mp3agent.candidates import build_pool
 
-REWRITES = ["align", "complete", "dropjoin", "nodistinct", "distinct", "capital"]
+REWRITES = ["align", "complete", "dropjoin", "nodistinct", "distinct", "capital", "countstar", "argmax", "intersect", "countall"]
 
 
 def main():
@@ -70,6 +70,7 @@ def main():
                    "max_votes": max([c["votes"] for c in pool] + [0]),
                    "n_hints": max(1, sum(c["votes"] for c in pool)),
                    "draft_struct": sqlops.features_of(row["issue_sql"])}
+        context["twins"] = features.twin_matches(pool, {c["sql"]: fb for c, fb in zip(pool, feedback)})
         X = [features.vector(observation, c, fb, context) for c, fb in zip(pool, feedback)]
         P = [features.vector(observation, c, None, context) for c in pool]
         return X, P, labels

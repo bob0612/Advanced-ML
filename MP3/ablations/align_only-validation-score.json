@@ -2320,6 +2320,6 @@
   "references_sha256": "5bfdd63ca75dd6b58c4ae3a7c72227ecfe0315655721ecaaef8e412ec3d6521d",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "cf59ceb76190725a4322a33a9686a954c857df7148b8b2ee2bcf0459ea21911f",
-  "scoring_seconds": 4.589300881999861
+  "predictions_sha256": "80e94736f1c8999a6d2a328ef62f3000d478cbd645b5ea0109bbba675ed15ca0",
+  "scoring_seconds": 4.123982693000016
 }

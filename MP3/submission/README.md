@@ -1,6 +1,6 @@
 # DASE7506 MP3: feedback-driven SQL repair agent (CPU, no live LLM)
 
-**Official test result: 179/240 = 74.58%** (`outputs/test-score.json`). Validation: 95/120 = 79.17%.
+**Official test result: 182/240 = 75.83%** (`outputs/test-score.json`). Validation: 96/120 = 80.00%.
 Report: [`report.pdf`](report.pdf).
 
 ## Contents
@@ -8,7 +8,7 @@ Report: [`report.pdf`](report.pdf).
 |---|---|
 | `submission.py` | entry point: `create_agent(checkpoint)` returns an agent with `act(observation)` |
 | `mp3agent/agent.py` | the perceive-plan-act controller (check draft, read hints, check candidates, submit) |
-| `mp3agent/candidates.py`, `mp3agent/sqlops.py` | candidate pool and the sqlglot rewrites (align, complete, dropjoin, DISTINCT toggles, capital) |
+| `mp3agent/candidates.py`, `mp3agent/sqlops.py` | candidate pool and the sqlglot rewrites (align, complete, dropjoin, DISTINCT toggles, COUNT(*), argmax, intersect, capital) |
 | `mp3agent/features.py` | candidate features (static and from check feedback) |
 | `config.json` | learned weights for the prior and the ranker (train split only) |
 | `tools/train_ranker.py` | regenerates `config.json` from the train split |
@@ -27,9 +27,9 @@ PYTHONPATH="$PWD/submission" python -m mp3_sql.predict --split test \
   --method submission/submission.py --checkpoint submission/config.json --output outputs/test.json
 python -m mp3_sql.score --split test --predictions outputs/test.json --output outputs/test-score.json
 ```
-Expected: `"correct": 179`, `"n": 240`. The run is deterministic. It takes about 62 s wall time for prediction and scoring with 4 CPUs under a 2 GiB address-space limit. Use `--split validation` for the validation result (95/120).
+Expected: `"correct": 182`, `"n": 240`. The run is deterministic. It takes about 32 s wall time for prediction and scoring with 4 CPUs under a 2 GiB address-space limit. Use `--split validation` for the validation result (96/120).
 
-Optional retraining (train split only, about 76 s):
+Optional retraining (train split only):
 ```bash
 python -m pip install -r submission/requirements-train.txt
 PYTHONPATH="$PWD:$PWD/submission" python submission/tools/train_ranker.py --output submission/config.json

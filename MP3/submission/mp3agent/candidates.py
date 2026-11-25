@@ -8,6 +8,10 @@ REWRITERS = {
     "nodistinct": lambda sql, obs: sqlops.remove_distinct(sql),
     "distinct": lambda sql, obs: sqlops.add_distinct(sql),
     "capital": lambda sql, obs: sqlops.capitalise_literals(sql),
+    "countstar": lambda sql, obs: sqlops.count_star(sql),
+    "argmax": lambda sql, obs: sqlops.argmax_limit(sql),
+    "countall": lambda sql, obs: sqlops.count_all_star(sql),
+    "intersect": lambda sql, obs: sqlops.intersect_both(sql, obs.get("task", {}).get("question", "")),
 }
 
 

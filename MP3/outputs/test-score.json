@@ -1,9 +1,9 @@
 {
   "protocol": "dase7506-sql-repair-v1",
   "n": 240,
-  "correct": 179,
-  "accuracy": 74.58333333333333,
-  "mean_tool_calls": 5.4375,
+  "correct": 182,
+  "accuracy": 75.83333333333333,
+  "mean_tool_calls": 5.908333333333333,
   "per_question": [
     {
       "id": "test-a1c138edcf2741fa",
@@ -22,7 +22,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-ee6e041ce37b0054",
@@ -41,7 +41,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-538656ffa2ed1d48",
@@ -79,7 +79,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-430318323ffb2861",
@@ -202,7 +202,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-61c75796a8275815",
@@ -240,7 +240,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 6
     },
     {
       "id": "test-bddf12cdb47ca832",
@@ -278,7 +278,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-858439935458b795",
@@ -354,7 +354,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-8f40a5b52b9370cf",
@@ -430,7 +430,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-b496cf1fb5c3bbcc",
@@ -506,7 +506,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-e15658e8028920ba",
@@ -639,7 +639,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-a8c04993a7ad13cd",
@@ -705,7 +705,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-3461e55dfc4762c2",
@@ -781,7 +781,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-45b26a2954c5243d",
@@ -819,7 +819,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-d88e9951aef75895",
@@ -971,7 +971,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-cd331f3cba426bea",
@@ -990,7 +990,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-574711dd6944dfd6",
@@ -1028,7 +1028,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-d251364ecf7e5c86",
@@ -1123,7 +1123,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-29fb575688847a8a",
@@ -1142,7 +1142,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-dd58a7dff9c982f6",
@@ -1199,7 +1199,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-6231ffa6dd91314c",
@@ -1218,7 +1218,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-a0a87f31df47b1b8",
@@ -1303,7 +1303,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-eac84a793058952e",
@@ -1322,7 +1322,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-fc75c2ef50fca9b0",
@@ -1341,7 +1341,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-047b089faca61e12",
@@ -1607,7 +1607,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-4806e31da8750422",
@@ -1702,7 +1702,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-f3f0286945ea2ccf",
@@ -1835,7 +1835,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-6d9b9770e909b3bc",
@@ -1854,7 +1854,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-63a193b8d7b9bb43",
@@ -2006,7 +2006,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-d7824905d10995a3",
@@ -2044,7 +2044,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-9d598f905573b7de",
@@ -2063,7 +2063,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-0d2e18c35ed71bd6",
@@ -2291,7 +2291,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-6b91020f8fe6249a",
@@ -2424,7 +2424,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-dbbe15050125cf36",
@@ -2538,7 +2538,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-09b06e6d2b8f0697",
@@ -2580,22 +2580,22 @@
     },
     {
       "id": "test-27f72c8c1d60b54c",
-      "passed": false,
+      "passed": true,
       "cases": [
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-516f6b296a76f1d9",
@@ -2633,7 +2633,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-1cf7b117ba0cdf0a",
@@ -2709,7 +2709,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-0f2e72ca13523af3",
@@ -2842,7 +2842,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-7574831b0d7f970e",
@@ -3108,7 +3108,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-b5169b5791544911",
@@ -3146,7 +3146,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-5439594cccda7666",
@@ -3264,22 +3264,22 @@
     },
     {
       "id": "test-16725d4ec6edbbe0",
-      "passed": false,
+      "passed": true,
       "cases": [
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "test-35000d488b12dd27",
@@ -3298,7 +3298,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "test-cee3cded85440d0c",
@@ -3355,7 +3355,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 5
     },
     {
       "id": "test-8767a866984b3660",
@@ -3450,7 +3450,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "test-cb4d204196b6daa9",
@@ -3526,7 +3526,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-6325c7bc0f81c247",
@@ -3697,7 +3697,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-ea750ea042a6230a",
@@ -3944,7 +3944,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-477f1ec7ebf850ad",
@@ -3982,7 +3982,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-a3fcde8bc5521960",
@@ -4115,7 +4115,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-6f9f93313ff665be",
@@ -4248,7 +4248,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 7
     },
     {
       "id": "test-5b46366a07dbf0e1",
@@ -4271,22 +4271,22 @@
     },
     {
       "id": "test-b61fd5f32241bb53",
-      "passed": false,
+      "passed": true,
       "cases": [
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-3090afd7fef3111b",
@@ -4324,7 +4324,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "test-28e2dcd23684ad29",
@@ -4600,6 +4600,6 @@
   "references_sha256": "8be5f2746ee324d6b4b880dd84a2f8de56fa540af08e93842c0476adec581506",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "af9c40360b3fdd23fb60da992d1e09cd1bbcc9621c08617e848698777cf8fb29",
-  "scoring_seconds": 13.519547466999938
+  "predictions_sha256": "7248896b335c9d88b4f46b9a8622961f6e538a680c17eddee7addc599ba9b4c3",
+  "scoring_seconds": 12.295600009999816
 }

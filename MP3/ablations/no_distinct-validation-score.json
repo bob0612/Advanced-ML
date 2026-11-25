@@ -3,7 +3,7 @@
   "n": 120,
   "correct": 94,
   "accuracy": 78.33333333333333,
-  "mean_tool_calls": 3.6083333333333334,
+  "mean_tool_calls": 4.05,
   "per_question": [
     {
       "id": "validation-3c4d5ecbd3a4ffc8",
@@ -22,7 +22,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-a402046f584d4813",
@@ -373,7 +373,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 3
     },
     {
       "id": "validation-a75b7764fcacce68",
@@ -468,7 +468,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 5
     },
     {
       "id": "validation-61511bf35997c117",
@@ -525,7 +525,7 @@
           "error": null
         }
       ],
-      "tool_calls": 6
+      "tool_calls": 8
     },
     {
       "id": "validation-ed6f64d1f362df5a",
@@ -544,7 +544,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 4
     },
     {
       "id": "validation-fad437395e6b6486",
@@ -753,7 +753,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "validation-e3956a7be9311093",
@@ -791,7 +791,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 3
     },
     {
       "id": "validation-5dad6a54f441726e",
@@ -876,7 +876,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 6
     },
     {
       "id": "validation-2643a95fe295b32a",
@@ -952,7 +952,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 6
     },
     {
       "id": "validation-cf65a76c2ca339d6",
@@ -1009,7 +1009,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-3288dc4cebb243fe",
@@ -1085,7 +1085,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 8
     },
     {
       "id": "validation-0eb1fb5e47ed829f",
@@ -1199,7 +1199,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 6
     },
     {
       "id": "validation-89448784d1f33b1c",
@@ -1408,7 +1408,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 5
     },
     {
       "id": "validation-76a4149a244deca0",
@@ -1541,7 +1541,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 4
     },
     {
       "id": "validation-34dc16c5398be753",
@@ -1560,7 +1560,7 @@
           "error": null
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "validation-c9d671c14d02f55b",
@@ -1598,7 +1598,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 4
     },
     {
       "id": "validation-741ca93b599363fd",
@@ -1712,7 +1712,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-aee6e8c41e83cad0",
@@ -1750,7 +1750,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 6
     },
     {
       "id": "validation-36ce398902e7135d",
@@ -1826,7 +1826,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-520d75479d567121",
@@ -1902,7 +1902,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 8
     },
     {
       "id": "validation-d6427352ac250d9e",
@@ -2016,7 +2016,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-3b364d78c765531e",
@@ -2130,7 +2130,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 6
     },
     {
       "id": "validation-afa9c2ecf222f328",
@@ -2149,7 +2149,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-c9574968cd2efd5c",
@@ -2206,7 +2206,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 7
     },
     {
       "id": "validation-162091e91ee345b7",
@@ -2234,7 +2234,7 @@
           }
         }
       ],
-      "tool_calls": 7
+      "tool_calls": 8
     },
     {
       "id": "validation-cb8c55ba2b7f46b9",
@@ -2272,7 +2272,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 8
     },
     {
       "id": "validation-c519bc86fc0f6a9d",
@@ -2320,6 +2320,6 @@
   "references_sha256": "5bfdd63ca75dd6b58c4ae3a7c72227ecfe0315655721ecaaef8e412ec3d6521d",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "f69ba7d753104d46903e0835d9c01d28489e0644b9bc7ab6a1e506523d8e6fb9",
-  "scoring_seconds": 5.142114829999855
+  "predictions_sha256": "9f328753d625336a821ad9e9dcf2aa5594c6fa853afe93482f795f52b197c492",
+  "scoring_seconds": 4.650465843999882
 }

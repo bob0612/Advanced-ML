@@ -28,7 +28,7 @@ The project is in [MP2](MP2/SUBMISSION.md).
 
 The project is in [MP3](MP3/SUBMISSION.md).
 
-- Test accuracy (official scorer, all 3 instances): **74.58%** (179/240).
+- Test accuracy (official scorer, all 3 instances): **75.83%** (182/240).
 - [Report](MP3/submission/report.pdf).
 - [Agent export](MP3/submission/) and [source ZIP](MP3/mp3-source.zip).
 - [Official test-score JSON](MP3/outputs/test-score.json).

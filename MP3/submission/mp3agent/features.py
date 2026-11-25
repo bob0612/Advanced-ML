@@ -4,7 +4,7 @@ import re
 
 from mp3agent import sqlops
 
-REWRITES = ("align", "complete", "dropjoin", "nodistinct", "distinct", "capital")
+REWRITES = ("align", "complete", "dropjoin", "nodistinct", "distinct", "capital", "countstar", "argmax", "intersect", "countall")
 
 NAMES = (["bias", "o_draft", "o_hint", "root_hint"] + ["rw_" + r for r in REWRITES] +
          ["votes", "votes_frac", "match", "match_nonempty", "match_empty", "ok", "error",
@@ -12,7 +12,20 @@ NAMES = (["bias", "o_draft", "o_hint", "root_hint"] + ["rw_" + r for r in REWRIT
           "draft_same", "distinct", "limit", "order", "group", "joins", "joins_vs_draft",
           "tables_vs_draft", "subq", "setop", "ordered_x_order", "limit_x_one",
           "log_len_ratio", "q_distinct_word", "distinct_x_qd", "is_draft_x_draftmatch",
-          "max_votes_other"])
+          "max_votes_other", "twin_dist_noq", "twin_dist_q", "twin_plain_noq", "twin_plain_q"])
+
+
+def twin_matches(pool, checked):
+    """For each candidate: does another candidate that differs only in DISTINCT match the example?"""
+    groups = {}
+    for cand in pool:
+        groups.setdefault(sqlops.distinct_key(cand["sql"]), []).append(cand)
+    out = {}
+    for members in groups.values():
+        for cand in members:
+            out[cand["sql"]] = any(other is not cand and (checked.get(other["sql"]) or {}).get("matches_example")
+                                   for other in members)
+    return out
 
 
 def _cells(rows):
@@ -85,4 +98,12 @@ def vector(observation, cand, feedback, context):
     q = observation["task"]["question"].lower()
     f["q_distinct_word"] = float(bool(re.search(r"\b(distinct|different|unique)\b", q)))
     f["distinct_x_qd"] = f["distinct"] * f["q_distinct_word"]
+    twin = context.get("twins", {}).get(cand["sql"], False)
+    if twin and f["match"]:
+        uses = sqlops.uses_distinct(cand["sql"])
+        qd = f["q_distinct_word"] > 0
+        f["twin_dist_noq"] = float(uses and not qd)
+        f["twin_dist_q"] = float(uses and qd)
+        f["twin_plain_noq"] = float(not uses and not qd)
+        f["twin_plain_q"] = float(not uses and qd)
     return [f[name] for name in NAMES]

@@ -3,7 +3,7 @@
   "n": 120,
   "correct": 95,
   "accuracy": 79.16666666666667,
-  "mean_tool_calls": 5.05,
+  "mean_tool_calls": 5.166666666666667,
   "per_question": [
     {
       "id": "validation-3c4d5ecbd3a4ffc8",
@@ -22,7 +22,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-a402046f584d4813",
@@ -373,7 +373,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-a75b7764fcacce68",
@@ -510,18 +510,18 @@
     },
     {
       "id": "validation-f1a67e3024ea10f2",
-      "passed": true,
+      "passed": false,
       "cases": [
         {
           "passed": true,
           "error": null
         },
         {
-          "passed": true,
+          "passed": false,
           "error": null
         },
         {
-          "passed": true,
+          "passed": false,
           "error": null
         }
       ],
@@ -544,7 +544,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-fad437395e6b6486",
@@ -791,7 +791,7 @@
           "error": null
         }
       ],
-      "tool_calls": 3
+      "tool_calls": 5
     },
     {
       "id": "validation-5dad6a54f441726e",
@@ -994,18 +994,18 @@
     },
     {
       "id": "validation-e53b4e10a90eb2c7",
-      "passed": false,
+      "passed": true,
       "cases": [
         {
           "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         }
       ],
@@ -1541,7 +1541,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-34dc16c5398be753",
@@ -1598,7 +1598,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-741ca93b599363fd",
@@ -1712,7 +1712,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-aee6e8c41e83cad0",
@@ -1750,7 +1750,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-36ce398902e7135d",
@@ -1826,7 +1826,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-520d75479d567121",
@@ -2016,7 +2016,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-3b364d78c765531e",
@@ -2149,7 +2149,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-c9574968cd2efd5c",
@@ -2206,7 +2206,7 @@
           "error": null
         }
       ],
-      "tool_calls": 5
+      "tool_calls": 6
     },
     {
       "id": "validation-162091e91ee345b7",
@@ -2320,6 +2320,6 @@
   "references_sha256": "5bfdd63ca75dd6b58c4ae3a7c72227ecfe0315655721ecaaef8e412ec3d6521d",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "47c4d4aeaf621cff35ddee7ecebca4bbf3b77ca7fd55b04ab606e85f69add8f9",
-  "scoring_seconds": 6.406069577999915
+  "predictions_sha256": "ce4306c6a0440c160065485df477aa4212d4670a55b7784c9a18b3cf1fca3fc6",
+  "scoring_seconds": 5.766792928000086
 }

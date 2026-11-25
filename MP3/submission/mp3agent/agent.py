@@ -49,7 +49,8 @@ class RepairAgent:
         return {"draft_feedback": checked.get(draft), "draft_sql": draft,
                 "max_votes": max([c["votes"] for c in pool] + [0]),
                 "n_hints": max(1, sum(c["votes"] for c in pool)),
-                "draft_struct": sqlops.features_of(draft)}
+                "draft_struct": sqlops.features_of(draft),
+                "twins": features.twin_matches(pool, checked)}
 
     def _score(self, observation, cand, feedback, context):
         x = features.vector(observation, cand, feedback, context)
@@ -74,7 +75,10 @@ class RepairAgent:
         if self.use_hints and not hint_called and remaining > 0 and draft in checked:
             return {"tool": "repair_hint"}
         columns = observation["example"]["columns"]
-        pool = build_pool(draft, hints or [], observation, self.rewrites)
+        key = (draft, tuple(hints or []))
+        if getattr(self, "_pool_key", None) != key:  # pure function of the observation: memoise
+            self._pool_key, self._pool = key, build_pool(draft, hints or [], observation, self.rewrites)
+        pool = [dict(c, origins=set(c["origins"])) for c in self._pool]
         context = self._context(observation, pool, checked)
         # Step 3: check unverified candidates in prior order while budget remains.
         if remaining > 0 and n_checks < self.max_checks:

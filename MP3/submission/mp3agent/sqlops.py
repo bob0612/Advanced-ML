@@ -2,6 +2,7 @@
 
 Nothing here touches a database; all database evidence comes from the official tools.
 """
+import functools
 import re
 
 import sqlglot
@@ -19,7 +20,8 @@ def norm_name(text):
     return text
 
 
-def parse(sql):
+@functools.lru_cache(maxsize=4096)
+def _parse_cached(sql):
     try:
         tree = sqlglot.parse_one(sql, read="sqlite")
     except Exception:  # noqa: BLE001 - any parse failure means "no rewrite"
@@ -29,6 +31,12 @@ def parse(sql):
     return tree
 
 
+def parse(sql):
+    """Parse one SQLite query; returns a private copy (callers may mutate it) or None."""
+    tree = _parse_cached(sql)
+    return tree.copy() if tree is not None else None
+
+
 def render(tree):
     try:
         return tree.sql(dialect="sqlite")
@@ -36,6 +44,7 @@ def render(tree):
         return None
 
 
+@functools.lru_cache(maxsize=8192)
 def canonical(sql):
     """Whitespace/case-insensitive identity used for de-duplication."""
     tree = parse(sql)
@@ -452,3 +461,111 @@ def drop_conjuncts(sql):
         if text:
             out.append(text)
     return out
+
+
+def count_star(sql):
+    """COUNT(DISTINCT x) -> COUNT(*) everywhere."""
+    tree = parse(sql)
+    if tree is None:
+        return None
+    new = tree.copy()
+    changed = False
+    for node in list(new.find_all(exp.Count)):
+        if isinstance(node.this, exp.Distinct):
+            node.replace(exp.Count(this=exp.Star()))
+            changed = True
+    return render(new) if changed else None
+
+
+def argmax_limit(sql):
+    """WHERE x = (SELECT MAX(x) FROM t)  ->  ORDER BY x DESC LIMIT 1 (MIN -> ASC).
+
+    Spider-style references pick one row; the subquery form also returns ties.
+    """
+    tree = parse(sql)
+    if tree is None or not isinstance(tree, exp.Select) or tree.args.get("where") is None \
+            or tree.args.get("order") is not None or tree.args.get("limit") is not None \
+            or tree.args.get("group"):
+        return None
+    condition = tree.args["where"].this
+    parts = list(condition.flatten()) if isinstance(condition, exp.And) else [condition]
+    for index, part in enumerate(parts):
+        if not isinstance(part, exp.EQ):
+            continue
+        left, right = part.this, part.expression
+        if isinstance(left, exp.Subquery):
+            left, right = right, left
+        if not isinstance(right, exp.Subquery) or not isinstance(right.this, exp.Select):
+            continue
+        inner = right.this
+        if len(inner.expressions) != 1 or inner.args.get("where") is not None:
+            continue
+        agg = inner.expressions[0]
+        agg = agg.this if isinstance(agg, exp.Alias) else agg
+        if not isinstance(agg, (exp.Max, exp.Min)):
+            continue
+        rest = [p.copy() for i, p in enumerate(parts) if i != index]
+        new = tree.copy()
+        new.set("where", exp.Where(this=exp.and_(*rest)) if rest else None)
+        new = new.order_by(exp.Ordered(this=left.copy(), desc=isinstance(agg, exp.Max))).limit(1)
+        return render(new)
+    return None
+
+
+def distinct_key(sql):
+    """Identity of a query up to DISTINCT / COUNT(DISTINCT)."""
+    base = remove_distinct(sql) or sql
+    base = count_star(base) or base
+    return canonical(base)
+
+
+def uses_distinct(sql):
+    return bool(re.search(r"\bdistinct\b", sql, re.I))
+
+
+def intersect_both(sql, question):
+    """'... both A and B' : WHERE c IN (A, B)  ->  (WHERE c = A) INTERSECT (WHERE c = B)."""
+    if not re.search(r"\bboth\b", question or "", re.I):
+        return None
+    tree = parse(sql)
+    if tree is None or not isinstance(tree, exp.Select) or tree.args.get("where") is None \
+            or tree.args.get("group") or tree.args.get("order") or tree.args.get("limit"):
+        return None
+    condition = tree.args["where"].this
+    parts = list(condition.flatten()) if isinstance(condition, exp.And) else [condition]
+    for index, part in enumerate(parts):
+        column, values = None, None
+        if isinstance(part, exp.In) and len(part.expressions) == 2 and not part.args.get("query"):
+            column, values = part.this, part.expressions
+        elif isinstance(part, exp.Paren) and isinstance(part.this, exp.Or):
+            part = part.this
+        if column is None and isinstance(part, exp.Or):
+            a, b = part.this, part.expression
+            if isinstance(a, exp.EQ) and isinstance(b, exp.EQ) and a.this == b.this:
+                column, values = a.this, [a.expression, b.expression]
+        if column is None:
+            continue
+        branches = []
+        for value in values:
+            rest = [p.copy() for i, p in enumerate(parts) if i != index]
+            rest.append(exp.EQ(this=column.copy(), expression=value.copy()))
+            branch = tree.copy()
+            branch.set("distinct", None)
+            branch.set("where", exp.Where(this=exp.and_(*rest)))
+            branches.append(branch)
+        return render(exp.Intersect(this=branches[0], expression=branches[1], distinct=True))
+    return None
+
+
+def count_all_star(sql):
+    """COUNT(x) -> COUNT(*) for plain columns (NULL-insensitive Spider style)."""
+    tree = parse(sql)
+    if tree is None:
+        return None
+    new = tree.copy()
+    changed = False
+    for node in list(new.find_all(exp.Count)):
+        if isinstance(node.this, exp.Column):
+            node.replace(exp.Count(this=exp.Star()))
+            changed = True
+    return render(new) if changed else None

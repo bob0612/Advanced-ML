@@ -3,7 +3,7 @@
   "n": 120,
   "correct": 55,
   "accuracy": 45.833333333333336,
-  "mean_tool_calls": 2.6,
+  "mean_tool_calls": 3.025,
   "per_question": [
     {
       "id": "validation-3c4d5ecbd3a4ffc8",
@@ -22,7 +22,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-a402046f584d4813",
@@ -382,7 +382,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-a75b7764fcacce68",
@@ -486,7 +486,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-61511bf35997c117",
@@ -552,7 +552,7 @@
           }
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-ed6f64d1f362df5a",
@@ -571,7 +571,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-fad437395e6b6486",
@@ -816,7 +816,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-e3956a7be9311093",
@@ -854,7 +854,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-5dad6a54f441726e",
@@ -1042,7 +1042,7 @@
           "error": null
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-cf65a76c2ca339d6",
@@ -1108,7 +1108,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-3288dc4cebb243fe",
@@ -1211,7 +1211,7 @@
           }
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-0eb1fb5e47ed829f",
@@ -1306,7 +1306,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-5d1ecaadd27fb6a2",
@@ -1325,7 +1325,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-89448784d1f33b1c",
@@ -1694,7 +1694,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-34dc16c5398be753",
@@ -1760,7 +1760,7 @@
           }
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-741ca93b599363fd",
@@ -1892,7 +1892,7 @@
           }
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 5
     },
     {
       "id": "validation-aee6e8c41e83cad0",
@@ -1939,7 +1939,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 5
     },
     {
       "id": "validation-36ce398902e7135d",
@@ -2024,7 +2024,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 5
     },
     {
       "id": "validation-520d75479d567121",
@@ -2365,7 +2365,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 4
     },
     {
       "id": "validation-c9574968cd2efd5c",
@@ -2422,7 +2422,7 @@
           "error": null
         }
       ],
-      "tool_calls": 2
+      "tool_calls": 5
     },
     {
       "id": "validation-162091e91ee345b7",
@@ -2450,7 +2450,7 @@
           }
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-cb8c55ba2b7f46b9",
@@ -2497,7 +2497,7 @@
           }
         }
       ],
-      "tool_calls": 4
+      "tool_calls": 7
     },
     {
       "id": "validation-c519bc86fc0f6a9d",
@@ -2554,6 +2554,6 @@
   "references_sha256": "5bfdd63ca75dd6b58c4ae3a7c72227ecfe0315655721ecaaef8e412ec3d6521d",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "018a7988c8278317ab16fe067ba6a571580b69561730ad6c0ed8375d3bcb2e95",
-  "scoring_seconds": 4.943934555999931
+  "predictions_sha256": "d7301bf95fdac7cd09ca1995c6c76f68a8799595b722a20df219e7508505e677",
+  "scoring_seconds": 4.838827723000122
 }
