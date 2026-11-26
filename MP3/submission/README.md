@@ -1,6 +1,6 @@
 # DASE7506 MP3: feedback-driven SQL repair agent with a LoRA proposer
 
-**Official test result: 187/240 = 77.92%** (`outputs/test-score.json`), in the graded live-LLM configuration: `Qwen/Qwen3-0.6B` + our LoRA adapter, CPU only, 4 threads, `--workers 1`. Validation: 101/120 = 84.17%.
+**Official test result: 188/240 = 78.33%** (`outputs/test-score.json`), in the graded live-LLM configuration: `Qwen/Qwen3-0.6B` + our LoRA adapter, CPU only, 4 threads, `--workers 1`. Validation: 101/120 = 84.17%.
 Without a local model the same export runs as the CPU-only controller: 182/240 on test, 96/120 on validation.
 Report: [`report.pdf`](report.pdf).
 
@@ -37,7 +37,7 @@ PYTHONPATH="$PWD/submission" taskset -c 0-3 python -m mp3_sql.predict --split te
   --method submission/submission.py --checkpoint submission/config.json --output outputs/test.json
 python -m mp3_sql.score --split test --predictions outputs/test.json --output outputs/test-score.json
 ```
-Expected: `"correct": 187`, `"n": 240`. Measured: 11 min wall, peak RSS 5.0 GB (the model is called on 29 of 240 tasks). Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
+Expected: `"correct": 188`, `"n": 240`. Measured: 11 min wall, peak RSS 5.0 GB (the model is called on 29 of 240 tasks). Sampling uses fixed per-task seeds, so the run repeats given the same library versions and thread count.
 
 Without `MP3_BASE_MODEL` the agent prints one warning and runs the CPU-only controller (182/240, about 32 s, no model dependencies needed).
 

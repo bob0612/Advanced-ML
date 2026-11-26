@@ -7,6 +7,7 @@ the highest learned score. All state is re-derived from the observation history 
 """
 import math
 import os
+import re
 import sys
 
 from mp3agent import features, sqlops
@@ -29,6 +30,7 @@ class RepairAgent:
         self.use_hints = config.get("use_hints", True)
         self.max_checks = int(config.get("max_checks", 8))
         self.selection = config.get("selection", "learned")
+        self.plain_twin = bool(config.get("plain_twin", False))
         llm = config.get("llm") or {}
         if llm.get("enabled") and not (os.environ.get("MP3_BASE_MODEL") or llm.get("base_dir")):
             # No local base model provided: run the CPU-only controller (identical to llm.enabled = false).
@@ -119,7 +121,7 @@ class RepairAgent:
         if llm.get("enabled") and not any_match:
             for sql in getattr(self, "_llm", None) or []:
                 if (checked.get(sql) or {}).get("matches_example"):
-                    return {"tool": "submit", "sql": sql}
+                    return {"tool": "submit", "sql": self._plain_twin(observation, sql, checked)}
         # Step 4: submit the best-scoring candidate.
         if self.selection == "first_match":  # ablation: first candidate (pool order) matching the example
             for cand in pool:
@@ -135,7 +137,25 @@ class RepairAgent:
             score = self._score(observation, cand, checked.get(cand["sql"]), context)
             if score > best_score:
                 best, best_score = cand["sql"], score
-        return {"tool": "submit", "sql": best}
+        return {"tool": "submit", "sql": self._plain_twin(observation, best, checked)}
+
+    _DISTINCT_WORDS = re.compile(r"\b(distinct|different|unique)\b", re.I)
+
+    def _plain_twin(self, observation, sql, checked):
+        """Final check (selected by train cross-fitting): if the chosen SQL is SELECT DISTINCT, the question
+        does not ask for distinct values, and the same query without DISTINCT was checked and also reproduces
+        the example, submit the version without DISTINCT (references rarely add DISTINCT unprompted)."""
+        if not self.plain_twin or self._DISTINCT_WORDS.search(observation["task"]["question"]):
+            return sql
+        text = sql.strip().rstrip(";")
+        head = re.match(r"SELECT\s+DISTINCT\s+", text, re.I)
+        if not head:
+            return sql
+        twin = sqlops.canonical("SELECT " + text[head.end():])
+        for other, fb in checked.items():
+            if other != sql and fb and fb.get("matches_example") and sqlops.canonical(other.strip().rstrip(";")) == twin:
+                return other
+        return sql
 
 
     def _llm_candidates(self, observation, pool, checked, context, schema, llm, stage=1):

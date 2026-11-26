@@ -1388,7 +1388,7 @@
     },
     {
       "id": "test-167f97f7d5a2eda6",
-      "sql": "SELECT DISTINCT Professionals.first_name, Professionals.last_name\nFROM Professionals\nJOIN Treatments ON Professionals.professional_id = Treatments.professional_id\nWHERE Treatments.cost_of_treatment < (\n    SELECT AVG(cost_of_treatment)\n    FROM Treatments\n)\nORDER BY Professionals.last_name, Professionals.first_name;",
+      "sql": "SELECT Professionals.first_name, Professionals.last_name FROM Professionals JOIN Treatments ON Professionals.professional_id = Treatments.professional_id WHERE Treatments.cost_of_treatment < (SELECT AVG(cost_of_treatment) FROM Treatments) ORDER BY Professionals.last_name, Professionals.first_name",
       "trace": [
         {
           "tool": "check",
@@ -1513,7 +1513,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Professionals.first_name, Professionals.last_name\nFROM Professionals\nJOIN Treatments ON Professionals.professional_id = Treatments.professional_id\nWHERE Treatments.cost_of_treatment < (\n    SELECT AVG(cost_of_treatment)\n    FROM Treatments\n)\nORDER BY Professionals.last_name, Professionals.first_name;"
+          "sql": "SELECT Professionals.first_name, Professionals.last_name FROM Professionals JOIN Treatments ON Professionals.professional_id = Treatments.professional_id WHERE Treatments.cost_of_treatment < (SELECT AVG(cost_of_treatment) FROM Treatments) ORDER BY Professionals.last_name, Professionals.first_name"
         }
       ],
       "tool_calls": 8
@@ -1852,7 +1852,7 @@
     },
     {
       "id": "test-bddf12cdb47ca832",
-      "sql": "SELECT DISTINCT singer.Song_Name, singer.Song_release_year FROM singer WHERE singer.Age = (SELECT MIN(Age) FROM singer)",
+      "sql": "SELECT singer.Song_Name, singer.Song_release_year\nFROM singer\nWHERE singer.Age = (SELECT MIN(Age) FROM singer);",
       "trace": [
         {
           "tool": "check",
@@ -2007,14 +2007,14 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT singer.Song_Name, singer.Song_release_year FROM singer WHERE singer.Age = (SELECT MIN(Age) FROM singer)"
+          "sql": "SELECT singer.Song_Name, singer.Song_release_year\nFROM singer\nWHERE singer.Age = (SELECT MIN(Age) FROM singer);"
         }
       ],
       "tool_calls": 8
     },
     {
       "id": "test-a2d3c742e0bdffaf",
-      "sql": "SELECT DISTINCT orchestra.Year_of_Founded\nFROM orchestra\nJOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID\nJOIN show ON performance.Performance_ID = show.Performance_ID\nGROUP BY orchestra.Orchestra_ID\nHAVING COUNT(DISTINCT show.Show_ID) > 1;",
+      "sql": "SELECT orchestra.Year_of_Founded FROM orchestra JOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID JOIN show ON performance.Performance_ID = show.Performance_ID GROUP BY orchestra.Orchestra_ID HAVING COUNT(DISTINCT show.Show_ID) > 1",
       "trace": [
         {
           "tool": "check",
@@ -2132,7 +2132,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT orchestra.Year_of_Founded\nFROM orchestra\nJOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID\nJOIN show ON performance.Performance_ID = show.Performance_ID\nGROUP BY orchestra.Orchestra_ID\nHAVING COUNT(DISTINCT show.Show_ID) > 1;"
+          "sql": "SELECT orchestra.Year_of_Founded FROM orchestra JOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID JOIN show ON performance.Performance_ID = show.Performance_ID GROUP BY orchestra.Orchestra_ID HAVING COUNT(DISTINCT show.Show_ID) > 1"
         }
       ],
       "tool_calls": 8
@@ -2832,7 +2832,7 @@
     },
     {
       "id": "test-3c78700b4d9bbb59",
-      "sql": "SELECT DISTINCT s.Name\nFROM singer s\nJOIN song sg ON s.Singer_ID = sg.Singer_ID\nGROUP BY s.Singer_ID\nHAVING COUNT(sg.Song_ID) > 1;",
+      "sql": "SELECT s.Name FROM singer AS s JOIN song AS sg ON s.Singer_ID = sg.Singer_ID GROUP BY s.Singer_ID HAVING COUNT(sg.Song_ID) > 1",
       "trace": [
         {
           "tool": "check",
@@ -2950,7 +2950,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT s.Name\nFROM singer s\nJOIN song sg ON s.Singer_ID = sg.Singer_ID\nGROUP BY s.Singer_ID\nHAVING COUNT(sg.Song_ID) > 1;"
+          "sql": "SELECT s.Name FROM singer AS s JOIN song AS sg ON s.Singer_ID = sg.Singer_ID GROUP BY s.Singer_ID HAVING COUNT(sg.Song_ID) > 1"
         }
       ],
       "tool_calls": 8
@@ -3777,7 +3777,7 @@
     },
     {
       "id": "test-6519a9a8c5a73d9d",
-      "sql": "SELECT DISTINCT airlines.Airline\nFROM flights\nJOIN airlines ON flights.Airline = airlines.uid\nWHERE flights.DestAirport = 'AHD';",
+      "sql": "SELECT airlines.Airline FROM flights JOIN airlines ON flights.Airline = airlines.uid WHERE flights.DestAirport = 'AHD'",
       "trace": [
         {
           "tool": "check",
@@ -3850,7 +3850,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT airlines.Airline\nFROM flights\nJOIN airlines ON flights.Airline = airlines.uid\nWHERE flights.DestAirport = 'AHD';"
+          "sql": "SELECT airlines.Airline FROM flights JOIN airlines ON flights.Airline = airlines.uid WHERE flights.DestAirport = 'AHD'"
         }
       ],
       "tool_calls": 5
@@ -5228,7 +5228,7 @@
     },
     {
       "id": "test-3461e55dfc4762c2",
-      "sql": "SELECT DISTINCT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Description = 'Presentation';",
+      "sql": "SELECT Templates.Template_ID FROM Templates JOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code WHERE Ref_Template_Types.Template_Type_Description = 'Presentation'",
       "trace": [
         {
           "tool": "check",
@@ -5315,7 +5315,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Description = 'Presentation';"
+          "sql": "SELECT Templates.Template_ID FROM Templates JOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code WHERE Ref_Template_Types.Template_Type_Description = 'Presentation'"
         }
       ],
       "tool_calls": 5
@@ -6175,7 +6175,7 @@
     },
     {
       "id": "test-d88e9951aef75895",
-      "sql": "SELECT DISTINCT contestant_name FROM CONTESTANTS WHERE contestant_name <> 'Jessie Alloway'",
+      "sql": "SELECT contestant_name\nFROM CONTESTANTS\nWHERE contestant_name != 'Jessie Alloway';",
       "trace": [
         {
           "tool": "check",
@@ -6365,7 +6365,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT contestant_name FROM CONTESTANTS WHERE contestant_name <> 'Jessie Alloway'"
+          "sql": "SELECT contestant_name\nFROM CONTESTANTS\nWHERE contestant_name != 'Jessie Alloway';"
         }
       ],
       "tool_calls": 7
@@ -6918,7 +6918,7 @@
     },
     {
       "id": "test-a5966282bc42b914",
-      "sql": "SELECT DISTINCT AVG(Dogs.age) AS average_age FROM Dogs JOIN Treatments ON Dogs.dog_id = Treatments.dog_id",
+      "sql": "SELECT AVG(Dogs.age) AS average_age\nFROM Dogs\nJOIN Treatments ON Dogs.dog_id = Treatments.dog_id;",
       "trace": [
         {
           "tool": "check",
@@ -7064,7 +7064,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT AVG(Dogs.age) AS average_age FROM Dogs JOIN Treatments ON Dogs.dog_id = Treatments.dog_id"
+          "sql": "SELECT AVG(Dogs.age) AS average_age\nFROM Dogs\nJOIN Treatments ON Dogs.dog_id = Treatments.dog_id;"
         }
       ],
       "tool_calls": 8
@@ -8263,7 +8263,7 @@
     },
     {
       "id": "test-43689cbe73aa8738",
-      "sql": "SELECT DISTINCT teacher.Name\nFROM teacher\nJOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID\nJOIN course ON course_arrange.Course_ID = course.Course_ID\nWHERE course.Course = 'Math';",
+      "sql": "SELECT teacher.Name FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID WHERE course.Course = 'Math'",
       "trace": [
         {
           "tool": "check",
@@ -8374,7 +8374,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT teacher.Name\nFROM teacher\nJOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID\nJOIN course ON course_arrange.Course_ID = course.Course_ID\nWHERE course.Course = 'Math';"
+          "sql": "SELECT teacher.Name FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID WHERE course.Course = 'Math'"
         }
       ],
       "tool_calls": 7
@@ -11873,7 +11873,7 @@
     },
     {
       "id": "test-ac021e94a48a3601",
-      "sql": "SELECT DISTINCT COUNT(*) AS total_count FROM teacher",
+      "sql": "SELECT COUNT(*) AS total_count\nFROM teacher;",
       "trace": [
         {
           "tool": "check",
@@ -12000,7 +12000,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT COUNT(*) AS total_count FROM teacher"
+          "sql": "SELECT COUNT(*) AS total_count\nFROM teacher;"
         }
       ],
       "tool_calls": 7
@@ -14961,7 +14961,7 @@
     },
     {
       "id": "test-3cc4ebb971dc3959",
-      "sql": "SELECT DISTINCT student.name\nFROM Highschooler student\nJOIN Friend ON student.ID = Friend.student_id\nWHERE student.grade > 5\nGROUP BY student.ID\nHAVING COUNT(Friend.friend_id) >= 2;",
+      "sql": "SELECT student.name FROM Highschooler AS student JOIN Friend ON student.ID = Friend.student_id WHERE student.grade > 5 GROUP BY student.ID HAVING COUNT(Friend.friend_id) >= 2",
       "trace": [
         {
           "tool": "check",
@@ -15081,7 +15081,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT student.name\nFROM Highschooler student\nJOIN Friend ON student.ID = Friend.student_id\nWHERE student.grade > 5\nGROUP BY student.ID\nHAVING COUNT(Friend.friend_id) >= 2;"
+          "sql": "SELECT student.name FROM Highschooler AS student JOIN Friend ON student.ID = Friend.student_id WHERE student.grade > 5 GROUP BY student.ID HAVING COUNT(Friend.friend_id) >= 2"
         }
       ],
       "tool_calls": 8
@@ -16383,7 +16383,7 @@
     },
     {
       "id": "test-a1bfbc487dc9c888",
-      "sql": "SELECT DISTINCT airlines.Airline\nFROM airlines\nJOIN flights ON airlines.Airline = flights.Airline\nWHERE flights.SourceAirport IN ('APG', 'CVO')\nGROUP BY airlines.Airline\nHAVING COUNT(DISTINCT flights.SourceAirport) = 2;",
+      "sql": "SELECT airlines.Airline FROM airlines JOIN flights ON airlines.Airline = flights.Airline WHERE flights.SourceAirport IN ('APG', 'CVO') GROUP BY airlines.Airline HAVING COUNT(DISTINCT flights.SourceAirport) = 2",
       "trace": [
         {
           "tool": "check",
@@ -16486,7 +16486,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT airlines.Airline\nFROM airlines\nJOIN flights ON airlines.Airline = flights.Airline\nWHERE flights.SourceAirport IN ('APG', 'CVO')\nGROUP BY airlines.Airline\nHAVING COUNT(DISTINCT flights.SourceAirport) = 2;"
+          "sql": "SELECT airlines.Airline FROM airlines JOIN flights ON airlines.Airline = flights.Airline WHERE flights.SourceAirport IN ('APG', 'CVO') GROUP BY airlines.Airline HAVING COUNT(DISTINCT flights.SourceAirport) = 2"
         }
       ],
       "tool_calls": 7
@@ -16836,7 +16836,7 @@
     },
     {
       "id": "test-9d598f905573b7de",
-      "sql": "SELECT DISTINCT orchestra.Year_of_Founded\nFROM orchestra\nJOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID\nGROUP BY orchestra.Orchestra_ID\nHAVING COUNT(performance.Performance_ID) > 1;",
+      "sql": "SELECT orchestra.Year_of_Founded FROM orchestra JOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID GROUP BY orchestra.Orchestra_ID HAVING COUNT(performance.Performance_ID) > 1",
       "trace": [
         {
           "tool": "check",
@@ -16954,14 +16954,14 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT orchestra.Year_of_Founded\nFROM orchestra\nJOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID\nGROUP BY orchestra.Orchestra_ID\nHAVING COUNT(performance.Performance_ID) > 1;"
+          "sql": "SELECT orchestra.Year_of_Founded FROM orchestra JOIN performance ON orchestra.Orchestra_ID = performance.Orchestra_ID GROUP BY orchestra.Orchestra_ID HAVING COUNT(performance.Performance_ID) > 1"
         }
       ],
       "tool_calls": 8
     },
     {
       "id": "test-0d2e18c35ed71bd6",
-      "sql": "SELECT DISTINCT Students.first_name\nFROM Students\nJOIN Addresses ON Students.permanent_address_id = Addresses.address_id\nWHERE Addresses.country = 'Haiti'\n   OR Students.cell_mobile_number = '09700166582';",
+      "sql": "SELECT Students.first_name FROM Students JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti' OR Students.cell_mobile_number = '09700166582'",
       "trace": [
         {
           "tool": "check",
@@ -17034,7 +17034,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Students.first_name\nFROM Students\nJOIN Addresses ON Students.permanent_address_id = Addresses.address_id\nWHERE Addresses.country = 'Haiti'\n   OR Students.cell_mobile_number = '09700166582';"
+          "sql": "SELECT Students.first_name FROM Students JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti' OR Students.cell_mobile_number = '09700166582'"
         }
       ],
       "tool_calls": 5
@@ -17573,7 +17573,7 @@
     },
     {
       "id": "test-9d28865e72f216ff",
-      "sql": "SELECT DISTINCT t.Hometown FROM teacher AS t ORDER BY t.Age ASC LIMIT 1",
+      "sql": "SELECT t.Hometown\nFROM teacher t\nORDER BY t.Age ASC\nLIMIT 1;",
       "trace": [
         {
           "tool": "check",
@@ -17715,7 +17715,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT t.Hometown FROM teacher AS t ORDER BY t.Age ASC LIMIT 1"
+          "sql": "SELECT t.Hometown\nFROM teacher t\nORDER BY t.Age ASC\nLIMIT 1;"
         }
       ],
       "tool_calls": 8
@@ -27191,7 +27191,7 @@
     },
     {
       "id": "test-cbb4a16977299a25",
-      "sql": "SELECT DISTINCT singer.Name\nFROM singer\nJOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID\nJOIN concert ON singer_in_concert.concert_ID = concert.concert_ID\nWHERE concert.Year = '2014';",
+      "sql": "SELECT singer.Name\nFROM singer\nJOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID\nJOIN concert ON singer_in_concert.concert_ID = concert.concert_ID\nWHERE concert.Year = '2014';",
       "trace": [
         {
           "tool": "check",
@@ -27242,7 +27242,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT singer.Name\nFROM singer\nJOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID\nJOIN concert ON singer_in_concert.concert_ID = concert.concert_ID\nWHERE concert.Year = '2014';"
+          "sql": "SELECT singer.Name\nFROM singer\nJOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID\nJOIN concert ON singer_in_concert.concert_ID = concert.concert_ID\nWHERE concert.Year = '2014';"
         }
       ],
       "tool_calls": 3
@@ -27789,7 +27789,7 @@
     },
     {
       "id": "test-c67f8ebf9f3b952b",
-      "sql": "SELECT DISTINCT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Code IN ('PP', 'PPT');",
+      "sql": "SELECT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Code IN ('PP', 'PPT');",
       "trace": [
         {
           "tool": "check",
@@ -27926,7 +27926,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Code IN ('PP', 'PPT');"
+          "sql": "SELECT Templates.Template_ID\nFROM Templates\nJOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code\nWHERE Ref_Template_Types.Template_Type_Code IN ('PP', 'PPT');"
         }
       ],
       "tool_calls": 5
@@ -28526,7 +28526,7 @@
     },
     {
       "id": "test-4dc3045ff002a9bb",
-      "sql": "SELECT DISTINCT ac.area_code\nFROM VOTES v\nJOIN CONTESTANTS c1 ON v.contestant_number = c1.contestant_number\nJOIN CONTESTANTS c2 ON v.contestant_number = c2.contestant_number\nJOIN AREA_CODE_STATE ac ON v.state = ac.state\nWHERE c1.contestant_name = 'Tabatha Gehling'\nAND c2.contestant_name = 'Kelly Clauss';",
+      "sql": "SELECT ac.area_code FROM VOTES AS v JOIN CONTESTANTS AS c1 ON v.contestant_number = c1.contestant_number JOIN CONTESTANTS AS c2 ON v.contestant_number = c2.contestant_number JOIN AREA_CODE_STATE AS ac ON v.state = ac.state WHERE c1.contestant_name = 'Tabatha Gehling' AND c2.contestant_name = 'Kelly Clauss'",
       "trace": [
         {
           "tool": "check",
@@ -28615,7 +28615,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT ac.area_code\nFROM VOTES v\nJOIN CONTESTANTS c1 ON v.contestant_number = c1.contestant_number\nJOIN CONTESTANTS c2 ON v.contestant_number = c2.contestant_number\nJOIN AREA_CODE_STATE ac ON v.state = ac.state\nWHERE c1.contestant_name = 'Tabatha Gehling'\nAND c2.contestant_name = 'Kelly Clauss';"
+          "sql": "SELECT ac.area_code FROM VOTES AS v JOIN CONTESTANTS AS c1 ON v.contestant_number = c1.contestant_number JOIN CONTESTANTS AS c2 ON v.contestant_number = c2.contestant_number JOIN AREA_CODE_STATE AS ac ON v.state = ac.state WHERE c1.contestant_name = 'Tabatha Gehling' AND c2.contestant_name = 'Kelly Clauss'"
         }
       ],
       "tool_calls": 6
@@ -28718,7 +28718,7 @@
     },
     {
       "id": "test-185d13249868dc86",
-      "sql": "SELECT DISTINCT s1.District\nFROM shop s1\nJOIN shop s2 ON s1.District = s2.District\nWHERE s1.Number_products < 3000 AND s2.Number_products > 10000;",
+      "sql": "SELECT s1.District FROM shop AS s1 JOIN shop AS s2 ON s1.District = s2.District WHERE s1.Number_products < 3000 AND s2.Number_products > 10000",
       "trace": [
         {
           "tool": "check",
@@ -28791,7 +28791,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT s1.District\nFROM shop s1\nJOIN shop s2 ON s1.District = s2.District\nWHERE s1.Number_products < 3000 AND s2.Number_products > 10000;"
+          "sql": "SELECT s1.District FROM shop AS s1 JOIN shop AS s2 ON s1.District = s2.District WHERE s1.Number_products < 3000 AND s2.Number_products > 10000"
         }
       ],
       "tool_calls": 5
@@ -32577,7 +32577,7 @@
     },
     {
       "id": "test-860426977626b57b",
-      "sql": "SELECT DISTINCT Documents.Document_ID\nFROM Documents\nJOIN Paragraphs ON Documents.Document_ID = Paragraphs.Document_ID\nWHERE Paragraphs.Paragraph_Text LIKE '%Brazil%' AND Paragraphs.Paragraph_Text LIKE '%Ireland%';",
+      "sql": "SELECT Documents.Document_ID FROM Documents JOIN Paragraphs ON Documents.Document_ID = Paragraphs.Document_ID WHERE Paragraphs.Paragraph_Text LIKE '%Brazil%' AND Paragraphs.Paragraph_Text LIKE '%Ireland%'",
       "trace": [
         {
           "tool": "check",
@@ -32650,7 +32650,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Documents.Document_ID\nFROM Documents\nJOIN Paragraphs ON Documents.Document_ID = Paragraphs.Document_ID\nWHERE Paragraphs.Paragraph_Text LIKE '%Brazil%' AND Paragraphs.Paragraph_Text LIKE '%Ireland%';"
+          "sql": "SELECT Documents.Document_ID FROM Documents JOIN Paragraphs ON Documents.Document_ID = Paragraphs.Document_ID WHERE Paragraphs.Paragraph_Text LIKE '%Brazil%' AND Paragraphs.Paragraph_Text LIKE '%Ireland%'"
         }
       ],
       "tool_calls": 5
@@ -35357,5 +35357,5 @@
       "tool_calls": 7
     }
   ],
-  "prediction_seconds": 673.5744140800089
+  "prediction_seconds": 53.264159493999955
 }

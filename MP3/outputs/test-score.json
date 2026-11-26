@@ -1,8 +1,8 @@
 {
   "protocol": "dase7506-sql-repair-v1",
   "n": 240,
-  "correct": 187,
-  "accuracy": 77.91666666666667,
+  "correct": 188,
+  "accuracy": 78.33333333333333,
   "mean_tool_calls": 6.0625,
   "per_question": [
     {
@@ -3397,18 +3397,18 @@
     },
     {
       "id": "test-cbb4a16977299a25",
-      "passed": false,
+      "passed": true,
       "cases": [
         {
           "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         },
         {
-          "passed": false,
+          "passed": true,
           "error": null
         }
       ],
@@ -4600,6 +4600,6 @@
   "references_sha256": "8be5f2746ee324d6b4b880dd84a2f8de56fa540af08e93842c0476adec581506",
   "scorer_sha256": "87870af26173fbe6d8994e4de179fb272ef1fadf7dcaafc2e7b4c814c61ec95b",
   "executor_sha256": "4ecc3839728d68bd83f0d2a52cdd8392fd76dbaec3e54a19422118dee587b471",
-  "predictions_sha256": "9092c2ab3c85feda8ccf8b58bf54fbe3192baeda197d16df0809b2d5f3e4b97f",
-  "scoring_seconds": 20.47660231392365
+  "predictions_sha256": "ef5fee6bc43f30d7c10c84d595bac11da0f8e83a3c2f58ec8ae33793390e8589",
+  "scoring_seconds": 15.92570174399998
 }

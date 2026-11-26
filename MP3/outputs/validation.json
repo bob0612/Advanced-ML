@@ -2614,7 +2614,7 @@
     },
     {
       "id": "validation-ab68d815813fb4b7",
-      "sql": "SELECT DISTINCT editor.Name\nFROM editor\nJOIN journal_committee ON editor.Editor_ID = journal_committee.Editor_ID\nJOIN journal ON journal_committee.Journal_ID = journal.Journal_ID\nWHERE journal.Sales > 3000;",
+      "sql": "SELECT editor.Name\nFROM editor\nJOIN journal_committee ON editor.Editor_ID = journal_committee.Editor_ID\nJOIN journal ON journal_committee.Journal_ID = journal.Journal_ID\nWHERE journal.Sales > 3000;",
       "trace": [
         {
           "tool": "check",
@@ -2665,7 +2665,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT editor.Name\nFROM editor\nJOIN journal_committee ON editor.Editor_ID = journal_committee.Editor_ID\nJOIN journal ON journal_committee.Journal_ID = journal.Journal_ID\nWHERE journal.Sales > 3000;"
+          "sql": "SELECT editor.Name\nFROM editor\nJOIN journal_committee ON editor.Editor_ID = journal_committee.Editor_ID\nJOIN journal ON journal_committee.Journal_ID = journal.Journal_ID\nWHERE journal.Sales > 3000;"
         }
       ],
       "tool_calls": 3
@@ -3547,7 +3547,7 @@
     },
     {
       "id": "validation-61511bf35997c117",
-      "sql": "SELECT DISTINCT c.Name\nFROM country c\nJOIN roller_coaster rc ON c.Country_ID = rc.Country_ID\nWHERE c.Languages NOT LIKE '%German%';",
+      "sql": "SELECT c.Name FROM country AS c JOIN roller_coaster AS rc ON c.Country_ID = rc.Country_ID WHERE NOT c.Languages LIKE '%German%'",
       "trace": [
         {
           "tool": "check",
@@ -3658,7 +3658,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT c.Name\nFROM country c\nJOIN roller_coaster rc ON c.Country_ID = rc.Country_ID\nWHERE c.Languages NOT LIKE '%German%';"
+          "sql": "SELECT c.Name FROM country AS c JOIN roller_coaster AS rc ON c.Country_ID = rc.Country_ID WHERE NOT c.Languages LIKE '%German%'"
         }
       ],
       "tool_calls": 7
@@ -11152,7 +11152,7 @@
     },
     {
       "id": "validation-d5436c6173d57687",
-      "sql": "SELECT DISTINCT CMI_Cross_References.cmi_cross_ref_id\nFROM CMI_Cross_References\nLEFT JOIN Parking_Fines ON CMI_Cross_References.cmi_cross_ref_id = Parking_Fines.cmi_cross_ref_id\nWHERE Parking_Fines.council_tax_id IS NULL;",
+      "sql": "SELECT CMI_Cross_References.cmi_cross_ref_id FROM CMI_Cross_References LEFT JOIN Parking_Fines ON CMI_Cross_References.cmi_cross_ref_id = Parking_Fines.cmi_cross_ref_id WHERE Parking_Fines.council_tax_id IS NULL",
       "trace": [
         {
           "tool": "check",
@@ -11277,7 +11277,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT CMI_Cross_References.cmi_cross_ref_id\nFROM CMI_Cross_References\nLEFT JOIN Parking_Fines ON CMI_Cross_References.cmi_cross_ref_id = Parking_Fines.cmi_cross_ref_id\nWHERE Parking_Fines.council_tax_id IS NULL;"
+          "sql": "SELECT CMI_Cross_References.cmi_cross_ref_id FROM CMI_Cross_References LEFT JOIN Parking_Fines ON CMI_Cross_References.cmi_cross_ref_id = Parking_Fines.cmi_cross_ref_id WHERE Parking_Fines.council_tax_id IS NULL"
         }
       ],
       "tool_calls": 5
@@ -11685,7 +11685,7 @@
     },
     {
       "id": "validation-20a72a6329ea98f5",
-      "sql": "SELECT DISTINCT AVG(song.rating) AS average_rating, AVG(song.resolution) AS average_resolution FROM song WHERE song.languages LIKE '%Bangla%'",
+      "sql": "SELECT AVG(song.rating) AS average_rating, AVG(song.resolution) AS average_resolution\nFROM song\nWHERE song.languages LIKE '%Bangla%';",
       "trace": [
         {
           "tool": "check",
@@ -11824,7 +11824,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT AVG(song.rating) AS average_rating, AVG(song.resolution) AS average_resolution FROM song WHERE song.languages LIKE '%Bangla%'"
+          "sql": "SELECT AVG(song.rating) AS average_rating, AVG(song.resolution) AS average_resolution\nFROM song\nWHERE song.languages LIKE '%Bangla%';"
         }
       ],
       "tool_calls": 7
@@ -13078,7 +13078,7 @@
     },
     {
       "id": "validation-4a37f9727ac82a31",
-      "sql": "SELECT DISTINCT channel.Name\nFROM channel\nJOIN broadcast ON channel.Channel_ID = broadcast.Channel_ID\nJOIN broadcast_share ON channel.Channel_ID = broadcast_share.Channel_ID\nWHERE broadcast.Time_of_day IN ('07:00', '19:00')\nGROUP BY channel.Channel_ID\nHAVING COUNT(DISTINCT broadcast.Time_of_day) = 2;",
+      "sql": "SELECT channel.Name FROM channel JOIN broadcast ON channel.Channel_ID = broadcast.Channel_ID JOIN broadcast_share ON channel.Channel_ID = broadcast_share.Channel_ID WHERE broadcast.Time_of_day IN ('07:00', '19:00') GROUP BY channel.Channel_ID HAVING COUNT(DISTINCT broadcast.Time_of_day) = 2",
       "trace": [
         {
           "tool": "check",
@@ -13196,7 +13196,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT channel.Name\nFROM channel\nJOIN broadcast ON channel.Channel_ID = broadcast.Channel_ID\nJOIN broadcast_share ON channel.Channel_ID = broadcast_share.Channel_ID\nWHERE broadcast.Time_of_day IN ('07:00', '19:00')\nGROUP BY channel.Channel_ID\nHAVING COUNT(DISTINCT broadcast.Time_of_day) = 2;"
+          "sql": "SELECT channel.Name FROM channel JOIN broadcast ON channel.Channel_ID = broadcast.Channel_ID JOIN broadcast_share ON channel.Channel_ID = broadcast_share.Channel_ID WHERE broadcast.Time_of_day IN ('07:00', '19:00') GROUP BY channel.Channel_ID HAVING COUNT(DISTINCT broadcast.Time_of_day) = 2"
         }
       ],
       "tool_calls": 8
@@ -13900,7 +13900,7 @@
     },
     {
       "id": "validation-36ce398902e7135d",
-      "sql": "SELECT DISTINCT r.council_tax_id\nFROM Rent_Arrears r\nJOIN CMI_Cross_References c ON r.cmi_cross_ref_id = c.cmi_cross_ref_id\nJOIN Customer_Master_Index cm ON c.master_customer_id = cm.master_customer_id\nWHERE cm.cmi_details NOT LIKE '%Schmidt, Kertzmann and Lubowitz%';",
+      "sql": "SELECT r.council_tax_id FROM Rent_Arrears AS r JOIN CMI_Cross_References AS c ON r.cmi_cross_ref_id = c.cmi_cross_ref_id JOIN Customer_Master_Index AS cm ON c.master_customer_id = cm.master_customer_id WHERE NOT cm.cmi_details LIKE '%Schmidt, Kertzmann and Lubowitz%'",
       "trace": [
         {
           "tool": "check",
@@ -14007,7 +14007,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT r.council_tax_id\nFROM Rent_Arrears r\nJOIN CMI_Cross_References c ON r.cmi_cross_ref_id = c.cmi_cross_ref_id\nJOIN Customer_Master_Index cm ON c.master_customer_id = cm.master_customer_id\nWHERE cm.cmi_details NOT LIKE '%Schmidt, Kertzmann and Lubowitz%';"
+          "sql": "SELECT r.council_tax_id FROM Rent_Arrears AS r JOIN CMI_Cross_References AS c ON r.cmi_cross_ref_id = c.cmi_cross_ref_id JOIN Customer_Master_Index AS cm ON c.master_customer_id = cm.master_customer_id WHERE NOT cm.cmi_details LIKE '%Schmidt, Kertzmann and Lubowitz%'"
         }
       ],
       "tool_calls": 7
@@ -14539,7 +14539,7 @@
     },
     {
       "id": "validation-520d75479d567121",
-      "sql": "SELECT DISTINCT a.artist_name\nFROM artist a\nJOIN song s ON a.artist_name = s.artist_name\nWHERE s.languages LIKE '%English%'\n  AND s.rating <= 8;",
+      "sql": "SELECT a.artist_name FROM artist AS a JOIN song AS s ON a.artist_name = s.artist_name WHERE s.languages LIKE '%English%' AND s.rating <= 8",
       "trace": [
         {
           "tool": "check",
@@ -14628,7 +14628,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT a.artist_name\nFROM artist a\nJOIN song s ON a.artist_name = s.artist_name\nWHERE s.languages LIKE '%English%'\n  AND s.rating <= 8;"
+          "sql": "SELECT a.artist_name FROM artist AS a JOIN song AS s ON a.artist_name = s.artist_name WHERE s.languages LIKE '%English%' AND s.rating <= 8"
         }
       ],
       "tool_calls": 5
@@ -16969,7 +16969,7 @@
     },
     {
       "id": "validation-024d54bb9d654160",
-      "sql": "SELECT DISTINCT mill.name\nFROM mill\nWHERE mill.name LIKE '%Moulin%';",
+      "sql": "SELECT mill.name\nFROM mill\nWHERE mill.name LIKE '%Moulin%';",
       "trace": [
         {
           "tool": "check",
@@ -17032,7 +17032,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT mill.name\nFROM mill\nWHERE mill.name LIKE '%Moulin%';"
+          "sql": "SELECT mill.name\nFROM mill\nWHERE mill.name LIKE '%Moulin%';"
         }
       ],
       "tool_calls": 3
@@ -17810,7 +17810,7 @@
     },
     {
       "id": "validation-c519bc86fc0f6a9d",
-      "sql": "SELECT DISTINCT Subjects.subject_name\nFROM Subjects;",
+      "sql": "SELECT Subjects.subject_name\nFROM Subjects;",
       "trace": [
         {
           "tool": "check",
@@ -17853,7 +17853,7 @@
         },
         {
           "tool": "submit",
-          "sql": "SELECT DISTINCT Subjects.subject_name\nFROM Subjects;"
+          "sql": "SELECT Subjects.subject_name\nFROM Subjects;"
         }
       ],
       "tool_calls": 3
@@ -18059,5 +18059,5 @@
       "tool_calls": 8
     }
   ],
-  "prediction_seconds": 318.9263886909466
+  "prediction_seconds": 26.881479610999918
 }

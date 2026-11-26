@@ -1,6 +1,6 @@
 # MP3 submission: feedback-driven SQL repair agent with a LoRA proposer
 
-**Test accuracy (official scorer, all 3 instances): 77.92% (187/240)**, graded configuration: CPU only, 4 threads, `--workers 1`, `Qwen/Qwen3-0.6B` + our LoRA adapter. Validation: 84.17% (101/120). Starter draft: 36.67% (88/240) on test. Without the model the same export runs as the CPU-only controller (182/240).
+**Test accuracy (official scorer, all 3 instances): 78.33% (188/240)**, graded configuration: CPU only, 4 threads, `--workers 1`, `Qwen/Qwen3-0.6B` + our LoRA adapter. Validation: 84.17% (101/120). Starter draft: 36.67% (88/240) on test. Without the model the same export runs as the CPU-only controller (182/240).
 Report: [`submission/report.pdf`](submission/report.pdf). Official outputs: [`outputs/test.json`](outputs/test.json), [`outputs/test-score.json`](outputs/test-score.json), model logs `outputs/llm-log-*.jsonl`.
 
 ## Method in one paragraph

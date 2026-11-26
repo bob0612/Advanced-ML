@@ -189,5 +189,6 @@
   "threads": 4,
   "adapter": "Qwen/Qwen3-0.6B LoRA r=16 alpha=32 (q,k,v,o,gate,up,down), 2 epochs on train split, 3 prompt variants per task (1359 examples)",
   "env": "MP3_BASE_MODEL=<Qwen3-0.6B snapshot @ c1899de> MP3_ADAPTER_DIR=<adapter dir>"
- }
+ },
+ "plain_twin": true
 }

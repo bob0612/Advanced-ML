@@ -104,6 +104,8 @@ def main():
         previous = json.loads(args.output.read_text())
         if "llm" in previous:
             config["llm"] = previous["llm"]
+        if "plain_twin" in previous:
+            config["plain_twin"] = previous["plain_twin"]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(config, indent=1) + "\n")
     print(json.dumps(config["training"]))
