@@ -1,0 +1,8 @@
+# 5-fold cross-fitting on TRAIN (folds grouped by database; ranker and LoRA refitted without the fold)
+# correct / 480 held-out train tasks, full agent, GPU generation (experiments/crossfit.sh, crossfit_eval.sh)
+nollm 394 480
+reserve6 391 480   (fold detail: 83/97 79/98 81/98 76/94 72/93)
+reserve5 395 480
+reserve4 395 480
+reserve3 398 480
+reserve2 400 480   (submitted)

@@ -24,4 +24,13 @@ The project is in [MP2](MP2/SUBMISSION.md).
 - [Official evaluation JSON](MP2/code/results/test-score.json).
 - [Commands, resources, seeds, asset hashes and AI disclosure](MP2/SUBMISSION.md).
 
+## MP3: SQL repair agent
+
+The project is in [MP3](MP3/SUBMISSION.md).
+
+- Test accuracy (official scorer, all 3 instances): **75.83%** (182/240).
+- [Report](MP3/submission/report.pdf).
+- [Agent export](MP3/submission/) and [source ZIP](MP3/mp3-source.zip).
+- [Official test-score JSON](MP3/outputs/test-score.json).
+
 Use URLs pinned to a commit for the course submission.
